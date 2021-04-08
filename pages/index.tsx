@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
 									/>
 								</>
 							);
-						}
+						} else return null;
 					})}
 				</BoxContainer>
 			</>
