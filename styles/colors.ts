@@ -12,7 +12,7 @@ export default {
 	mediumBlue: '#09092f',
 	linedBlue: '#161b44',
 	// font
-	lightFont: '#C4C4C4',
+	lightFont: '#B9BAC7',
 	// muted
 	mutedBrightOrange: '#61383A',
 	mutedBrightBlue: '#055F88',
