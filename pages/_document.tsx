@@ -1,5 +1,13 @@
-import Document from 'next/document';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
+import { mediaStyles } from 'styles/media';
+
+const PRELOADED_FONTS = [
+	'/fonts/GT-America-Mono-Bold.woff2',
+	'/fonts/GT-America-Extended-Bold.woff2',
+	'/fonts/GT-America-Condensed-Medium.woff2',
+	'/fonts/GT-America-Condensed-Bold.woff2',
+];
 
 export default class MyDocument extends Document {
 	static async getInitialProps(ctx: any) {
@@ -26,5 +34,29 @@ export default class MyDocument extends Document {
 		} finally {
 			styledComponentsSheet.seal();
 		}
+	}
+
+	render() {
+		return (
+			<Html lang="en">
+				<Head>
+					<style type="text/css" dangerouslySetInnerHTML={{ __html: mediaStyles }} />
+					{PRELOADED_FONTS.map((fontPath) => (
+						<link
+							key={fontPath}
+							rel="preload"
+							href={fontPath}
+							as="font"
+							type="font/woff2"
+							crossOrigin="anonymous"
+						/>
+					))}
+				</Head>
+				<body>
+					<Main />
+					<NextScript />
+				</body>
+			</Html>
+		);
 	}
 }

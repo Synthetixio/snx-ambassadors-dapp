@@ -1,15 +1,23 @@
-// next.config.js
-const path = require('path');
+const withPlugins = require('next-compose-plugins');
+const optimizedImages = require('next-optimized-images');
 
-module.exports = {
-	webpack(config) {
-		config.module.rules.push({
-			test: /\.(svg)$/,
-			include: path.resolve(__dirname, 'assets/svg'),
-			loader: 'svg-react-loader',
-		});
-
-		return config;
-	},
-	env: {},
-};
+module.exports = withPlugins(
+	[
+		[
+			optimizedImages,
+			{
+				images: {
+					handleImages: ['jpeg', 'png', 'svg', 'webp', 'gif', 'ico'],
+				},
+			},
+		],
+	],
+	{
+		trailingSlash: !!process.env.NEXT_PUBLIC_TRAILING_SLASH_ENABLED,
+		exportPathMap: function (defaultPathMap) {
+			return {
+				...defaultPathMap,
+			};
+		},
+	}
+);

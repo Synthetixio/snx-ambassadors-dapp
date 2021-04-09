@@ -1,17 +1,24 @@
 import { FC, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { Svg } from 'react-optimized-image';
 
 import AmbassadorLogo from 'assets/svg/ambassador-logo.svg';
 import MenuHamburgerIcon from 'assets/svg/menu-hamburger.svg';
 import MenuCloseIcon from 'assets/svg/menu-close.svg';
+
 import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
 import ROUTES from 'constants/routes';
 import { useRouter } from 'next/router';
+import { FlexDivCentered, IconButton, UpperCased } from 'styles/common';
+import Button from 'components/Button';
+import ConnectionDot from 'components/ConnectionDot';
+import { useTranslation } from 'react-i18next';
 
 const Header: FC = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const toggleMenu = () => setMenuOpen(!menuOpen);
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	return (
 		<>
@@ -19,7 +26,7 @@ const Header: FC = () => {
 				<HeaderContainerInner>
 					<HeaderSectionLeft>
 						<StatsLogoWrap>
-							<AmbassadorLogo />
+							<Svg src={AmbassadorLogo} />
 						</StatsLogoWrap>
 					</HeaderSectionLeft>
 					<HeaderSectionRight>
@@ -28,8 +35,14 @@ const Header: FC = () => {
 								{key}
 							</HeaderLink>
 						))}
+						<WalletButton variant="solid" onClick={() => {}}>
+							<FlexDivCentered>
+								<StyledConnectionDot />
+								<UpperCased>{t('common.wallet.not-connected')}</UpperCased>
+							</FlexDivCentered>
+						</WalletButton>
 						<MenuToggleButton onClick={toggleMenu}>
-							{menuOpen ? <MenuCloseIcon /> : <MenuHamburgerIcon />}
+							{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
 						</MenuToggleButton>
 					</HeaderSectionRight>
 				</HeaderContainerInner>
@@ -152,4 +165,56 @@ const MenuToggleButton = styled.button`
 	@media only screen and (min-width: 800px) {
 		display: none;
 	}
+`;
+
+const NetworkTag = styled(FlexDivCentered)`
+	background: ${(props) => props.theme.colors.mediumBlue};
+	font-size: 10px;
+	font-family: ${(props) => props.theme.fonts.condensedMedium};
+	padding: 2px 5px;
+	border-radius: 100px;
+	height: 18px;
+	text-align: center;
+	justify-content: center;
+	text-transform: uppercase;
+`;
+
+const WalletButton = styled(Button)`
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
+
+	svg {
+		margin-left: 5px;
+		width: 10px;
+		height: 10px;
+		color: ${(props) => props.theme.colors.gray};
+		${(props) =>
+			props.isActive &&
+			css`
+				color: ${(props) => props.theme.colors.white};
+			`}
+	}
+	&:hover {
+		${NetworkTag} {
+			background: ${(props) => props.theme.colors.darkBlue};
+		}
+	}
+`;
+
+const MenuButton = styled(IconButton)<{ isActive: boolean }>`
+	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
+	color: ${(props) => (props.isActive ? props.theme.colors.white : props.theme.colors.gray)};
+	padding: 7px;
+	border-radius: 4px;
+	background: ${(props) => props.theme.colors.darkBlue};
+	&:hover {
+		color: ${(props) => props.theme.colors.white};
+	}
+	height: 32px;
+`;
+
+const StyledConnectionDot = styled(ConnectionDot)`
+	margin-right: 8px;
 `;

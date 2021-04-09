@@ -1,26 +1,20 @@
-import { createContext, FC } from 'react';
+import React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { ethers } from 'ethers';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
-import { synthetix, Network } from '@synthetixio/js';
-import { ThemeProvider as SCThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
+import { RecoilRoot } from 'recoil';
 
 import Layout from 'sections/shared/Layout';
+import WithAppContainers from 'containers';
 
 import { scTheme } from 'styles/theme';
 
 import 'styles/index.css';
 import '../i18n';
-
-const provider = new ethers.providers.InfuraProvider(
-	'homestead',
-	process.env.NEXT_PUBLIC_INFURA_KEY
-);
-
-export const ProviderContext = createContext(provider);
+import '@reach/dialog/styles.css';
+import 'tippy.js/dist/tippy.css';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -32,11 +26,7 @@ const queryClient = new QueryClient({
 	},
 });
 
-const snxjs = synthetix({ network: Network.Mainnet, provider });
-
-export const SNXJSContext = createContext(snxjs);
-
-const App: FC<AppProps> = ({ Component, pageProps }) => {
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 	return (
 		<>
 			<Head>
@@ -120,18 +110,18 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 				<link rel="icon" href="/images/favicon.png" />
 				<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter" />
 			</Head>
-			<SCThemeProvider theme={scTheme}>
-				<QueryClientProvider client={queryClient}>
-					<SNXJSContext.Provider value={snxjs}>
-						<ProviderContext.Provider value={provider}>
+			<ThemeProvider theme={scTheme}>
+				<RecoilRoot>
+					<WithAppContainers>
+						<QueryClientProvider client={queryClient}>
 							<Layout>
 								<Component {...pageProps} />
 							</Layout>
-						</ProviderContext.Provider>
-					</SNXJSContext.Provider>
-					<ReactQueryDevtools />
-				</QueryClientProvider>
-			</SCThemeProvider>
+							<ReactQueryDevtools />
+						</QueryClientProvider>
+					</WithAppContainers>
+				</RecoilRoot>
+			</ThemeProvider>
 		</>
 	);
 };
