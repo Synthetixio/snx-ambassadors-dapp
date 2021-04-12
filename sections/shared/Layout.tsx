@@ -1,6 +1,9 @@
+import { zIndex } from 'constants/ui';
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
+import media from 'styles/media';
 import Header from './Header';
+import Footer from './Footer';
 
 type LayoutProps = {};
 
@@ -10,6 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 			<GlobalStyle />
 			<Header />
 			<section>{children}</section>
+			<Footer />
 		</>
 	);
 };
@@ -17,83 +21,59 @@ export default Layout;
 
 const GlobalStyle = createGlobalStyle`
   body {
-		margin: 0 20px;
-		scroll-behavior: smooth;
-		font-family: "GT America Mono", sans-serif;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 18px;
-		/* identical to box height, or 129% */
-
-		background-color: ${(props) => props.theme.colors.darkBlue};
-		color: ${(props) => props.theme.colors.lightFont};
-
-		.stats-box-skeleton, .chart-skeleton, .liquidations-skeleton {
-			background-color: ${(props) => props.theme.colors.mediumBlue};
-		}
-
-		.chart-skeleton {
-			margin-top: -100px;
-		}
-
-		.stats-box-skeleton::after, .chart-skeleton::after, .liquidations-skeleton::after {
-			background: linear-gradient(90deg, #08021E 0%, #120446 146.21%);
-		}
-
-		/* Let's get this party started */
-		*::-webkit-scrollbar, ::-webkit-scrollbar {
-				width: 8px;
-				height: 8px;
-		}
-		
-		/* Track */
-		*::-webkit-scrollbar-track, ::-webkit-scrollbar-track {
-				-webkit-box-shadow: inset 0 0 10px ${(props) => props.theme.colors.darkBlue}; 
-				box-shadow: inset 0 0 10px ${(props) => props.theme.colors.darkBlue}; 
-				-webkit-border-radius: 10px;
-				border-radius: 10px;
-				width: 8px;
-				height: 8px;
-				background: ${(props) => props.theme.colors.darkBlue};
-		}
-		
-		/* Handle */
-		*::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
-				-webkit-border-radius: 10px;
-				border-radius: 10px;
-				background: ${(props) => props.theme.colors.mutedBrightPink}; 
-				width: 8px;
-				height: 8px;
-				-webkit-box-shadow: inset 0 0 10px ${(props) => props.theme.colors.mutedBrightPink}; 
-				box-shadow: inset 0 0 10px ${(props) => props.theme.colors.mutedBrightPink}; 
-		}
-		*::-webkit-scrollbar-thumb:window-inactive, ::-webkit-scrollbar-thumb:window-inactive {
-			background: ${(props) => props.theme.colors.brightPink};
-			width: 8px;
-			height: 8px;
-		}
-
-		svg.recharts-surface tspan {
-			font-size: 10px !important;
-		}
-
-		.MuiPopover-paper {
-			width: 250px;
-			color: ${(props) => props.theme.colors.white};
-			background-color: ${(props) => props.theme.colors.tooltipBlue};
-			padding: 15px;
-			font-family: 'Inter', sans-serif;
-			font-size: 14px;
-			line-height: 18px;
-			text-align: center;
-		}
-
-		.MuiTypography-colorPrimary {
-			color: ${(props) => props.theme.colors.brightBlue};
-		}
-		.MuiTypography-root {
-			margin: 10px 0;
-		}
+		background-color: ${(props) => props.theme.colors.black};
+		color: ${(props) => props.theme.colors.white}
   }
+
+  .bn-notify-custom {
+		&& {
+			font-family: ${(props) => props.theme.fonts.regular};
+		}
+	}
+	/* blocknative onboard style overrides */
+	.bn-onboard-custom {
+		&&& {
+			font-family: ${(props) => props.theme.fonts.regular};
+			color: ${(props) => props.theme.colors.white};
+
+		}
+		&&.bn-onboard-modal {
+			z-index: ${zIndex.DIALOG_OVERLAY};
+			background: rgba(0, 0, 0, 0.8);
+			${media.lessThan('sm')`
+				align-items: flex-start;
+			`};
+		}
+		&&.bn-onboard-modal-content-header-icon {
+			background: none;
+		}
+		&&.bn-onboard-selected-wallet {
+			background-color: ${(props) => props.theme.colors.grayBlue};
+			color: ${(props) => props.theme.colors.white};
+		}
+		&&.bn-onboard-modal-content {
+			background-color: ${(props) => props.theme.colors.navy};
+			${media.lessThan('sm')`
+				height: 100%;
+			`};
+		}
+		&&.bn-onboard-select-wallet-info {
+			cursor: pointer;
+			color: ${(props) => props.theme.colors.white};
+		}
+		&&.bn-onboard-dark-mode-background-hover {
+			&:hover {
+				background-color: ${(props) => props.theme.colors.grayBlue};
+			}
+		}
+		&&.bn-onboard-prepare-button {
+			border-radius: 2px;
+			color: ${(props) => props.theme.colors.white} ;
+			background-color: ${(props) => props.theme.colors.navy} ;
+			border: 1px solid ${(props) => props.theme.colors.grayBlue} ;
+		}
+		.bn-onboard-clickable {
+			color: ${(props) => props.theme.colors.white} !important;
+		}
+	}
 `;
