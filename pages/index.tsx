@@ -42,6 +42,8 @@ const HomePage: React.FC = () => {
 						} else return <></>;
 					})}
 				</BoxContainer>
+				<SectionHeader title={t('members.title')} />
+				<BoxContainer></BoxContainer>
 			</>
 		</>
 	);

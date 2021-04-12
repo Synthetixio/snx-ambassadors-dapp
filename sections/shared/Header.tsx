@@ -79,7 +79,7 @@ const HeaderContainer = styled.div`
 	width: 100%;
 	margin-left: -20px;
 	z-index: ${Z_INDEX.thousand};
-	background-color: ${(props) => props.theme.colors.darkBlue};
+	background-color: ${(props) => props.theme.colors.black};
 	@media only screen and (max-width: 1266px) {
 		margin-left: 0;
 	}
@@ -108,6 +108,7 @@ const HeaderSectionLeft = styled.div`
 const HeaderSectionRight = styled.div`
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	font-family: ${(props) => `${props.theme.fonts.condensedBold}, ${props.theme.fonts.regular}`};
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.white};
@@ -129,7 +130,7 @@ const MobileMenu = styled.div`
 	display: flex;
 	flex-direction: column;
 	z-index: ${Z_INDEX.thousand};
-	background-color: ${(props) => props.theme.colors.darkBlue};
+	background-color: ${(props) => props.theme.colors.navy};
 	justify-content: space-between;
 	font-size: 20px;
 	line-height: 120%;
@@ -184,6 +185,8 @@ const WalletButton = styled(Button)`
 	align-items: center;
 	justify-content: space-between;
 	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
+	background: ${(props) => props.theme.colors.navy};
+	margin-left: 16px;
 
 	svg {
 		margin-left: 5px;
@@ -198,7 +201,7 @@ const WalletButton = styled(Button)`
 	}
 	&:hover {
 		${NetworkTag} {
-			background: ${(props) => props.theme.colors.darkBlue};
+			background: ${(props) => props.theme.colors.navy};
 		}
 	}
 `;
@@ -208,7 +211,7 @@ const MenuButton = styled(IconButton)<{ isActive: boolean }>`
 	color: ${(props) => (props.isActive ? props.theme.colors.white : props.theme.colors.gray)};
 	padding: 7px;
 	border-radius: 4px;
-	background: ${(props) => props.theme.colors.darkBlue};
+	background: ${(props) => props.theme.colors.navy};
 	&:hover {
 		color: ${(props) => props.theme.colors.white};
 	}

@@ -1,7 +1,6 @@
 export const ROUTES = {
-	Home: '/',
+	Delegate: '/',
 	Vote: '/vote',
-	Members: '/members',
 };
 
 export default ROUTES;

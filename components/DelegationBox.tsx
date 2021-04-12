@@ -2,7 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { FlexDivRow, FlexDivCol } from 'styles/common';
 import { Token } from 'queries/tokenLists/types';
+import { Svg } from 'react-optimized-image';
 import { useTranslation } from 'react-i18next';
+import Button from 'components/Button';
+import ViewIcon from 'assets/svg/view-eye.svg';
 
 interface DelegationBoxProps {
 	tokenInfo: Token;
@@ -18,15 +21,19 @@ const DelegationBox: React.FC<DelegationBoxProps> = ({ tokenInfo, votingPower, d
 			<Title>{tokenInfo.name}</Title>
 			<Ticker>{tokenInfo.symbol}</Ticker>
 			<DataRow>
-				<DataCol>
+				<DataCol rightSide={false}>
 					<p>{t('delegation.box.power')}</p>
 					<span>{votingPower}</span>
 				</DataCol>
-				<DataCol right>
+				<DataCol rightSide={true}>
 					<p>{t('delegation.box.delegated')}</p>
 					<span>{delegated}</span>
 				</DataCol>
 			</DataRow>
+			<ViewButton variant="text" onClick={() => {}}>
+				<Svg src={ViewIcon} />
+				View protocol
+			</ViewButton>
 		</Box>
 	);
 };
@@ -34,10 +41,10 @@ const DelegationBox: React.FC<DelegationBoxProps> = ({ tokenInfo, votingPower, d
 export default DelegationBox;
 
 const Box = styled(FlexDivCol)`
-	margin-top: 20px;
-	padding: 20px;
-	background: ${(props) => props.theme.colors.mediumBlue};
-	opacity: 0.8;
+	margin-top: 24px;
+	padding: 0px 24px;
+	background: linear-gradient(180deg, #08021e 0%, #120446 100%);
+	border-radius: 2px;
 	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
 	width: 33%;
 	justify-content: center;
@@ -79,29 +86,57 @@ const Ticker = styled.div`
 	font-size: 12px;
 	text-align: center;
 	margin-bottom: 16px;
+	opacity: 0.7;
 `;
 
 const DataRow = styled(FlexDivRow)`
-	border: 1px solid ${(props) => props.theme.colors.gray};
 	width: 100%;
 `;
 
-const DataCol = styled(FlexDivCol)<{ right?: boolean }>`
+const DataCol = styled(FlexDivCol)<{ rightSide: boolean }>`
 	width: 50%;
 	text-align: center;
 	text-transform: uppercase;
-	border: 1px solid ${(props: any) => props.theme.colors.gray};
+	border-top: 1px solid ${(props: any) => props.theme.colors.border};
+	border-bottom: 1px solid ${(props: any) => props.theme.colors.border};
+	border-right: ${(props) =>
+		props.rightSide
+			? `1px solid ${props.theme.colors.border}`
+			: `0.5px solid ${props.theme.colors.border}`};
+	border-left: ${(props) =>
+		props.rightSide
+			? `0.5px solid ${props.theme.colors.border}`
+			: `1px solid ${props.theme.colors.border}`};
+
 	padding: 8px;
 
 	p {
 		font-family: ${(props) => props.theme.fonts.condensedBold};
 		font-size: 14px;
-		color: ${(props) => props.theme.colors.lightFont};
+		color: ${(props) => props.theme.colors.gray};
+		margin: 0;
 	}
 
 	span {
 		font-family: ${(props) => props.theme.fonts.expanded};
 		font-size: 12px;
 		color: ${(props) => props.theme.colors.white};
+		margin: 0;
+	}
+`;
+
+const ViewButton = styled(Button)`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	color: ${(props) => props.theme.colors.blue};
+	text-transform: uppercase;
+	font-size: 12px;
+
+	margin: 16px 0px;
+
+	svg {
+		margin-right: 8px;
 	}
 `;

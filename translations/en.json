@@ -6,5 +6,13 @@
 			"delegated": "Delegated",
 			"view": "View protocol"
 		}
+	},
+	"members": {
+		"title": "Members"
+	},
+	"common": {
+		"wallet": {
+			"not-connected": "Connect wallet"
+		}
 	}
 }
