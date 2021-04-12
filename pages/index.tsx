@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
-import SectionHeader from 'components/SectionHeader';
+import Header from 'components/Header';
 import { useTranslation } from 'react-i18next';
 import { FlexDivRow } from 'styles/common';
-import DelegationBox from 'components/DelegationBox';
+import Box from 'components/Box';
 import useTokenList from 'queries/tokenLists/useTokenLists';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
+import Table from 'components/Table';
+import { CellProps } from 'react-table';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -18,6 +20,33 @@ const HomePage: React.FC = () => {
 
 	const SUPPORTED_PROTOCOLS = ['UNI', 'COMP', 'AAVE'];
 
+	const memberColumns = useMemo(() => {
+		const columns = [
+			{
+				Header: <>{t('members.table.name')}</>,
+				accessor: 'name',
+				Cell: (cellProps: CellProps<any>) => {
+					return <>{cellProps.value}</>;
+				},
+
+				sortable: false,
+			},
+			{
+				Header: <>{t('members.table.address')}</>,
+				accessor: 'address',
+				Cell: (cellProps: CellProps<any>) => {
+					return <>{cellProps.value}</>;
+				},
+
+				sortable: false,
+			},
+		];
+
+		return columns;
+	}, [t]);
+
+	const data = [];
+
 	return (
 		<>
 			<Head>
@@ -25,25 +54,28 @@ const HomePage: React.FC = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<>
-				<SectionHeader title={t('delegation.title')} first />
+				<Header title={t('delegation.title')} first />
 				<BoxContainer>
 					{SUPPORTED_PROTOCOLS.map((symbol, i) => {
 						if (tokenList) {
 							return (
 								<>
-									<DelegationBox
-										key={i}
-										tokenInfo={tokenList[symbol]}
-										votingPower={'0'}
-										delegated={'0'}
-									/>
+									<Box key={i} tokenInfo={tokenList[symbol]} votingPower={'0'} delegated={'0'} />
 								</>
 							);
 						} else return <></>;
 					})}
 				</BoxContainer>
-				<SectionHeader title={t('members.title')} />
-				<BoxContainer></BoxContainer>
+				<Header title={t('members.title')} />
+				<BoxContainer>
+					<StyledTable
+						palette="primary"
+						columns={memberColumns}
+						data={[]}
+						isLoading={false}
+						showPagination={false}
+					/>
+				</BoxContainer>
 			</>
 		</>
 	);
@@ -59,4 +91,20 @@ const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	font-family: ${(props) => `${props.theme.fonts.expanded}, ${props.theme.fonts.regular}`};
 	color: ${(props) => props.theme.colors.white};
 	text-transform: uppercase;
+`;
+
+const StyledTable = styled(Table)`
+	padding: 0 10px;
+
+	width: 100%;
+
+	.table-body-cell {
+		height: 40px;
+	}
+	.table-body-cell,
+	.table-header-cell {
+		&:last-child {
+			justify-content: flex-end;
+		}
+	}
 `;

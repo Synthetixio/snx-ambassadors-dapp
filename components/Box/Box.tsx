@@ -7,16 +7,16 @@ import { useTranslation } from 'react-i18next';
 import Button from 'components/Button';
 import ViewIcon from 'assets/svg/view-eye.svg';
 
-interface DelegationBoxProps {
+interface BoxProps {
 	tokenInfo: Token;
 	votingPower: string;
 	delegated: string;
 }
 
-const DelegationBox: React.FC<DelegationBoxProps> = ({ tokenInfo, votingPower, delegated }) => {
+const Box: React.FC<BoxProps> = ({ tokenInfo, votingPower, delegated }) => {
 	const { t } = useTranslation();
 	return (
-		<Box>
+		<Container>
 			<Icon src={tokenInfo.logoURI} />
 			<Title>{tokenInfo.name}</Title>
 			<Ticker>{tokenInfo.symbol}</Ticker>
@@ -34,13 +34,13 @@ const DelegationBox: React.FC<DelegationBoxProps> = ({ tokenInfo, votingPower, d
 				<Svg src={ViewIcon} />
 				View protocol
 			</ViewButton>
-		</Box>
+		</Container>
 	);
 };
 
-export default DelegationBox;
+export default Box;
 
-const Box = styled(FlexDivCol)`
+const Container = styled(FlexDivCol)`
 	margin-top: 24px;
 	padding: 0px 24px;
 	background: linear-gradient(180deg, #08021e 0%, #120446 100%);

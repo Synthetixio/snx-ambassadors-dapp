@@ -2,18 +2,18 @@ import { FC } from 'react';
 import styled from 'styled-components';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 
-type SectionHeaderProps = {
+type HeaderProps = {
 	title: string;
 	first?: boolean;
 };
 
-const SectionHeader: FC<SectionHeaderProps> = ({ title, first }) => (
-	<SectionHeaderContainer first={first}>{title}</SectionHeaderContainer>
+const Header: FC<HeaderProps> = ({ title, first }) => (
+	<HeaderContainer first={first}>{title}</HeaderContainer>
 );
 
-export default SectionHeader;
+export default Header;
 
-const SectionHeaderContainer = styled.div<{ first?: boolean }>`
+const HeaderContainer = styled.div<{ first?: boolean }>`
 	max-width: ${MAX_PAGE_WIDTH}px;
 	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
 	font-size: 28px;
