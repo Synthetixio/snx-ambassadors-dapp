@@ -26,6 +26,23 @@ export const FlexDivRowCentered = styled(FlexDivRow)`
 	align-items: center;
 `;
 
+export const GradientCard = styled(FlexDivCol)`
+	margin-top: 24px;
+	padding: 24px;
+	background: linear-gradient(180deg, #08021e 0%, #120446 100%);
+	border-radius: 2px;
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+	justify-content: center;
+	align-items: center;
+
+	@media only screen and (max-width: 1015px) {
+		width: 45%;
+	}
+	@media only screen and (max-width: 854px) {
+		width: 100%;
+	}
+`;
+
 export const linkCSS = css`
 	text-decoration: none;
 	&:hover {
@@ -207,7 +224,7 @@ export const LineSpacer = styled.div`
 
 export const ErrorMessage = styled.p`
 	font-size: 12px;
-	font-family: ${(props) => props.theme.fonts.interSemiBold};
+	font-family: ${(props) => props.theme.fonts.regular};
 	text-align: center;
 	text-transform: capitalize;
 	color: ${(props) => props.theme.colors.pink};
@@ -233,13 +250,13 @@ export const ModalItemTitle = styled.div`
 	text-transform: uppercase;
 	color: ${(props) => props.theme.colors.gray};
 	font-size: 12px;
-	font-family: ${(props) => props.theme.fonts.interBold};
+	font-family: ${(props) => props.theme.fonts.regular};
 `;
 
 export const ModalItemText = styled.div`
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.white};
-	font-family: ${(props) => props.theme.fonts.interBold};
+	font-family: ${(props) => props.theme.fonts.regular};
 `;
 
 export const TableNoResults = styled.div`
@@ -250,7 +267,7 @@ export const TableNoResults = styled.div`
 
 export const TableNoResultsTitle = styled.div`
 	font-size: 14px;
-	font-family: ${(props) => props.theme.fonts.extended};
+	font-family: ${(props) => props.theme.fonts.expanded};
 	padding-bottom: 4px;
 	color: ${(props) => props.theme.colors.white};
 `;

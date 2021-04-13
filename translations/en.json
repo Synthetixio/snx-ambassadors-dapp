@@ -20,6 +20,9 @@
 			"votes": "votes"
 		}
 	},
+	"protocol": {
+		"vote-weight": "Total voting weight"
+	},
 	"common": {
 		"wallet": {
 			"not-connected": "Connect wallet"

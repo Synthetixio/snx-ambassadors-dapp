@@ -9,13 +9,14 @@ import MenuCloseIcon from 'assets/svg/menu-close.svg';
 import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
 import ROUTES from 'constants/routes';
 import { useRouter } from 'next/router';
-import { FlexDivCentered, IconButton, UpperCased } from 'styles/common';
+import { FlexDivCentered, IconButton, linkCSS, UpperCased } from 'styles/common';
 import Button from 'components/Button';
 import ConnectionDot from 'components/ConnectionDot';
 import { useTranslation } from 'react-i18next';
 import Connector from 'containers/Connector';
 import { useRecoilValue } from 'recoil';
 import { isWalletConnectedState, networkState, truncatedWalletAddressState } from 'store/wallet';
+import Link from 'next/link';
 
 const Header: FC = () => {
 	const { t } = useTranslation();
@@ -37,21 +38,31 @@ const Header: FC = () => {
 		} else return network?.name;
 	};
 
+	const NAV_LINKS = {
+		DELEGATE: ROUTES.Delegate,
+		VOTE: ROUTES.Vote,
+	};
+
 	return (
 		<>
 			<HeaderContainer>
 				<HeaderContainerInner>
 					<HeaderSectionLeft>
 						<StatsLogoWrap>
-							<Svg src={AmbassadorLogo} />
+							<Link href="/">
+								<StyledLink>
+									<Svg src={AmbassadorLogo} />
+								</StyledLink>
+							</Link>
 						</StatsLogoWrap>
 					</HeaderSectionLeft>
 					<HeaderSectionRight>
-						{Object.entries(ROUTES).map(([key, value]) => (
+						{Object.entries(NAV_LINKS).map(([key, value]) => (
 							<HeaderLink key={key} onClick={() => router.push(value)}>
 								{key}
 							</HeaderLink>
 						))}
+
 						{isWalletConnected ? (
 							<WalletButton
 								variant="solid"
@@ -87,7 +98,7 @@ const Header: FC = () => {
 			<Divider />
 			{menuOpen ? (
 				<MobileMenu>
-					{Object.entries(ROUTES).map(([key, value]) => (
+					{Object.entries(NAV_LINKS).map(([key, value]) => (
 						<MobileLink
 							key={key}
 							onClick={() => {
@@ -150,6 +161,11 @@ const HeaderSectionRight = styled.div`
 	font-family: ${(props) => `${props.theme.fonts.condensedBold}, ${props.theme.fonts.regular}`};
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.white};
+`;
+
+const StyledLink = styled.div`
+	${linkCSS}
+	cursor: pointer;
 `;
 
 const HeaderLink = styled.div`

@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import Header from 'components/Header';
 import { useTranslation } from 'react-i18next';
 import { FlexDivRow, Paragraph, GridDiv } from 'styles/common';
-import Box from 'components/Box';
 import useTokenList from 'queries/tokenLists/useTokenLists';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
 import Spinner from 'assets/svg/loader.svg';
 import { Svg } from 'react-optimized-image';
+import ProtocolBox from 'sections/delegate/components/ProtocolBox';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -80,7 +80,12 @@ const HomePage: React.FC = () => {
 					{SUPPORTED_PROTOCOLS.map((symbol, i) => {
 						if (tokenList) {
 							return (
-								<Box key={i} tokenInfo={tokenList[symbol]} votingPower={'0'} delegated={'0'} />
+								<ProtocolBox
+									key={i}
+									tokenInfo={tokenList[symbol]}
+									votingPower={'0'}
+									delegated={'0'}
+								/>
 							);
 						} else return <StyledSpinner src={Spinner} />;
 					})}

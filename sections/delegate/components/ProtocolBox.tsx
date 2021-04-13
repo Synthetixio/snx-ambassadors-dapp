@@ -1,19 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FlexDivRow, FlexDivCol } from 'styles/common';
+import { FlexDivRow, FlexDivCol, GradientCard } from 'styles/common';
 import { Token } from 'queries/tokenLists/types';
 import { Svg } from 'react-optimized-image';
 import { useTranslation } from 'react-i18next';
 import Button from 'components/Button';
 import ViewIcon from 'assets/svg/view-eye.svg';
+import Link from 'next/link';
+import ROUTES from 'constants/routes';
 
-interface BoxProps {
+interface ProtocolBoxProps {
 	tokenInfo: Token;
 	votingPower: string;
 	delegated: string;
 }
 
-const Box: React.FC<BoxProps> = ({ tokenInfo, votingPower, delegated }) => {
+const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, delegated }) => {
 	const { t } = useTranslation();
 	return (
 		<Container>
@@ -30,32 +32,19 @@ const Box: React.FC<BoxProps> = ({ tokenInfo, votingPower, delegated }) => {
 					<span>{delegated}</span>
 				</DataCol>
 			</DataRow>
-			<ViewButton variant="text" onClick={() => {}}>
-				<Svg src={ViewIcon} />
-				View protocol
-			</ViewButton>
+			<Link href={ROUTES.Protocol(tokenInfo.symbol)}>
+				<ViewButton variant="text">
+					<Svg src={ViewIcon} />
+					View protocol
+				</ViewButton>
+			</Link>
 		</Container>
 	);
 };
 
-export default Box;
+export default ProtocolBox;
 
-const Container = styled(FlexDivCol)`
-	margin-top: 24px;
-	padding: 0px 24px;
-	background: linear-gradient(180deg, #08021e 0%, #120446 100%);
-	border-radius: 2px;
-	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-	justify-content: center;
-	align-items: center;
-
-	@media only screen and (max-width: 1015px) {
-		width: 45%;
-	}
-	@media only screen and (max-width: 854px) {
-		width: 100%;
-	}
-`;
+const Container = styled(GradientCard)``;
 
 const Icon = styled.img`
 	width: 150px;
