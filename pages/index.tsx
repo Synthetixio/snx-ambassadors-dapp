@@ -3,12 +3,14 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import Header from 'components/Header';
 import { useTranslation } from 'react-i18next';
-import { FlexDivRow } from 'styles/common';
+import { FlexDivRow, Paragraph, GridDiv } from 'styles/common';
 import Box from 'components/Box';
 import useTokenList from 'queries/tokenLists/useTokenLists';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
+import Spinner from 'assets/svg/loader.svg';
+import { Svg } from 'react-optimized-image';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -18,7 +20,7 @@ const HomePage: React.FC = () => {
 		tokenListQuery.data,
 	]);
 
-	const SUPPORTED_PROTOCOLS = ['UNI', 'COMP', 'AAVE'];
+	const SUPPORTED_PROTOCOLS = ['UNI', 'COMP', 'AAVE', '1INCH'];
 
 	const memberColumns = useMemo(() => {
 		const columns = [
@@ -26,26 +28,41 @@ const HomePage: React.FC = () => {
 				Header: <>{t('members.table.name')}</>,
 				accessor: 'name',
 				Cell: (cellProps: CellProps<any>) => {
-					return <>{cellProps.value}</>;
+					return <StyledParagraph>{cellProps.value}</StyledParagraph>;
 				},
 
 				sortable: false,
+				width: 600,
 			},
 			{
 				Header: <>{t('members.table.address')}</>,
 				accessor: 'address',
 				Cell: (cellProps: CellProps<any>) => {
-					return <>{cellProps.value}</>;
+					return <StyledParagraph>{cellProps.value}</StyledParagraph>;
 				},
-
 				sortable: false,
+				width: 600,
 			},
 		];
 
 		return columns;
 	}, [t]);
 
-	const data = [];
+	// @TODO: add real addresses
+	const data = [
+		{
+			name: 'MiLLiΞ',
+			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
+		},
+		{
+			name: 'farmwell',
+			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
+		},
+		{
+			name: 'SynthaMan',
+			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
+		},
+	];
 
 	return (
 		<>
@@ -54,24 +71,29 @@ const HomePage: React.FC = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<>
-				<Header title={t('delegation.title')} first />
+				<Header title={t('ambassadors.title')} first />
 				<BoxContainer>
+					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
+				</BoxContainer>
+				<Header title={t('delegation.title')} />
+				<StyledGrid>
 					{SUPPORTED_PROTOCOLS.map((symbol, i) => {
 						if (tokenList) {
 							return (
-								<>
-									<Box key={i} tokenInfo={tokenList[symbol]} votingPower={'0'} delegated={'0'} />
-								</>
+								<Box key={i} tokenInfo={tokenList[symbol]} votingPower={'0'} delegated={'0'} />
 							);
-						} else return <></>;
+						} else return <StyledSpinner src={Spinner} />;
 					})}
-				</BoxContainer>
+				</StyledGrid>
 				<Header title={t('members.title')} />
+				<BoxContainer>
+					<StyledParagraph>{t('members.helper')}</StyledParagraph>
+				</BoxContainer>
 				<BoxContainer>
 					<StyledTable
 						palette="primary"
 						columns={memberColumns}
-						data={[]}
+						data={data}
 						isLoading={false}
 						showPagination={false}
 					/>
@@ -82,6 +104,13 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+const StyledGrid = styled(GridDiv)`
+	max-width: ${MAX_PAGE_WIDTH}px;
+	margin: 0 auto;
+	column-gap: 16px;
+	grid-template-columns: auto auto auto;
+`;
 
 const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	max-width: ${MAX_PAGE_WIDTH}px;
@@ -94,8 +123,6 @@ const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
 `;
 
 const StyledTable = styled(Table)`
-	padding: 0 10px;
-
 	width: 100%;
 
 	.table-body-cell {
@@ -104,7 +131,19 @@ const StyledTable = styled(Table)`
 	.table-body-cell,
 	.table-header-cell {
 		&:last-child {
-			justify-content: flex-end;
 		}
 	}
+`;
+
+const StyledParagraph = styled(Paragraph)`
+	font-size: 14px;
+	font-family: ${(props) => props.theme.fonts.regular};
+	color: ${(props) => props.theme.colors.white};
+	text-transform: none;
+`;
+
+// @ts-ignore
+const StyledSpinner = styled(Svg)`
+	display: block;
+	margin: 30px auto;
 `;

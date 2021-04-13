@@ -1,4 +1,8 @@
 {
+	"ambassadors": {
+		"title": "Mission",
+		"description": "The Synthetix Ambassadors program is for synthetix community members to delegate their third-party voting weights to the ambassadors who aim to vote in the best interest of the synthetix ecosystem."
+	},
 	"delegation": {
 		"title": "My Delegation",
 		"box": {
@@ -9,9 +13,11 @@
 	},
 	"members": {
 		"title": "Members",
+		"helper": "The following ambassadors operate out of a Gnosis Multisig found here <0>0x1231</0>",
 		"table": {
 			"name": "name",
-			"address": "address"
+			"address": "address",
+			"votes": "votes"
 		}
 	},
 	"common": {

@@ -13,12 +13,29 @@ import { FlexDivCentered, IconButton, UpperCased } from 'styles/common';
 import Button from 'components/Button';
 import ConnectionDot from 'components/ConnectionDot';
 import { useTranslation } from 'react-i18next';
+import Connector from 'containers/Connector';
+import { useRecoilValue } from 'recoil';
+import { isWalletConnectedState, networkState, truncatedWalletAddressState } from 'store/wallet';
 
 const Header: FC = () => {
-	const [menuOpen, setMenuOpen] = useState(false);
-	const toggleMenu = () => setMenuOpen(!menuOpen);
-	const router = useRouter();
 	const { t } = useTranslation();
+	const { connectWallet } = Connector.useContainer();
+	const router = useRouter();
+
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	const truncatedWalletAddress = useRecoilValue(truncatedWalletAddressState);
+	const isWalletConnected = useRecoilValue(isWalletConnectedState);
+	const network = useRecoilValue(networkState);
+	const isL2 = network?.useOvm ?? false;
+
+	const toggleMenu = () => setMenuOpen(!menuOpen);
+
+	const getNetworkName = () => {
+		if (network?.useOvm) {
+			return `0Ξ ${network?.name}`;
+		} else return network?.name;
+	};
 
 	return (
 		<>
@@ -35,12 +52,32 @@ const Header: FC = () => {
 								{key}
 							</HeaderLink>
 						))}
-						<WalletButton variant="solid" onClick={() => {}}>
-							<FlexDivCentered>
-								<StyledConnectionDot />
-								<UpperCased>{t('common.wallet.not-connected')}</UpperCased>
-							</FlexDivCentered>
-						</WalletButton>
+						{isWalletConnected ? (
+							<WalletButton
+								variant="solid"
+								onClick={() => {
+									// setWalletOptionsModalOpened(!walletOptionsModalOpened);
+								}}
+								// isActive={walletOptionsModalOpened}
+								data-testid="user-menu"
+							>
+								<FlexDivCentered data-testid="wallet-address">
+									<StyledConnectionDot />
+									{truncatedWalletAddress}
+								</FlexDivCentered>
+								<NetworkTag className="network-tag" data-testid="network-tag">
+									{getNetworkName()}
+								</NetworkTag>
+								{/* {walletOptionsModalOpened ? caretUp : caretDown} */}
+							</WalletButton>
+						) : (
+							<WalletButton variant="solid" onClick={() => connectWallet()}>
+								<FlexDivCentered>
+									<StyledConnectionDot />
+									<UpperCased>{t('common.wallet.not-connected')}</UpperCased>
+								</FlexDivCentered>
+							</WalletButton>
+						)}
 						<MenuToggleButton onClick={toggleMenu}>
 							{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
 						</MenuToggleButton>
@@ -69,9 +106,8 @@ const Header: FC = () => {
 
 export default Header;
 
-// TODO create a common flex container
 const HeaderContainer = styled.div`
-	height: 60px;
+	height: 50px;
 	padding-top: 35px;
 	position: fixed;
 	font-style: normal;
@@ -90,6 +126,8 @@ const HeaderContainerInner = styled.div`
 	margin: 0 auto;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
+
 	@media only screen and (max-width: 1266px) {
 		max-width: calc(100% - 40px);
 		margin: 0;

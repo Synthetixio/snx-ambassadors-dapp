@@ -1,5 +1,6 @@
 import { zIndex } from 'constants/ui';
 import React from 'react';
+import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 import media from 'styles/media';
 import Header from './Header';
@@ -11,18 +12,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<>
 			<GlobalStyle />
-			<Header />
-			<section>{children}</section>
-			<Footer />
+			<Page>
+				<Header />
+				<Section>{children}</Section>
+				<Footer />
+			</Page>
 		</>
 	);
 };
 export default Layout;
 
+const Page = styled.div``;
+
+const Section = styled.section`
+	min-height: 90vh;
+	padding: 20px 0px;
+`;
+
 const GlobalStyle = createGlobalStyle`
   body {
 		background-color: ${(props) => props.theme.colors.black};
-		color: ${(props) => props.theme.colors.white}
+		color: ${(props) => props.theme.colors.white};
+		margin: 0;
   }
 
   .bn-notify-custom {
