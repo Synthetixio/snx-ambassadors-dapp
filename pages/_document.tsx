@@ -7,6 +7,9 @@ const PRELOADED_FONTS = [
 	'/fonts/GT-America-Extended-Bold.woff2',
 	'/fonts/GT-America-Condensed-Medium.woff2',
 	'/fonts/GT-America-Condensed-Bold.woff2',
+	'/fonts/Inter-Regular.woff2',
+	'/fonts/Inter-SemiBold.woff2',
+	'/fonts/Inter-Bold.woff2',
 ];
 
 export default class MyDocument extends Document {

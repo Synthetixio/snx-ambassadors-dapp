@@ -175,6 +175,10 @@ export const ResponsiveImage = styled.img`
 	width: 100%;
 `;
 
+export const StyledLink = styled(ExternalLink)`
+	color: ${(props) => props.theme.colors.blue};
+`;
+
 export const BoldText = styled.span`
 	font-family: ${(props) => props.theme.fonts.condensedBold};
 `;
