@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FlexDivRow, FlexDivCol, GradientCard } from 'styles/common';
-import { Token } from 'queries/tokenLists/types';
 import { Svg } from 'react-optimized-image';
 import { useTranslation } from 'react-i18next';
 import Button from 'components/Button';
 import ViewIcon from 'assets/svg/view-eye.svg';
 import Link from 'next/link';
 import ROUTES from 'constants/routes';
+import { Token } from 'constants/protocols';
 
 interface ProtocolBoxProps {
 	tokenInfo: Token;
@@ -19,7 +19,8 @@ const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, deleg
 	const { t } = useTranslation();
 	return (
 		<Container>
-			<Icon src={tokenInfo.logoURI} />
+			<LogoWrapper>{tokenInfo.logo}</LogoWrapper>
+
 			<Title>{tokenInfo.name}</Title>
 			<Ticker>{tokenInfo.symbol}</Ticker>
 			<DataRow>
@@ -45,12 +46,6 @@ const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, deleg
 export default ProtocolBox;
 
 const Container = styled(GradientCard)``;
-
-const Icon = styled.img`
-	width: 150px;
-	height: auto;
-	padding: 16px;
-`;
 
 const Title = styled.div`
 	font-family: ${(props) => props.theme.fonts.expanded};
@@ -124,5 +119,13 @@ const ViewButton = styled(Button)`
 
 	svg {
 		margin-right: 8px;
+	}
+`;
+
+const LogoWrapper = styled.div`
+	img {
+		width: 100px;
+		height: auto;
+		border-radius: 50px;
 	}
 `;

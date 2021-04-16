@@ -4,23 +4,14 @@ import styled from 'styled-components';
 import Header from 'components/Header';
 import { useTranslation } from 'react-i18next';
 import { FlexDivRow, Paragraph, GridDiv } from 'styles/common';
-import useTokenList from 'queries/tokenLists/useTokenLists';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
-import Spinner from 'assets/svg/loader.svg';
-import { Svg } from 'react-optimized-image';
 import ProtocolBox from 'sections/delegate/components/ProtocolBox';
+import { protocols } from 'constants/protocols';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
-	const tokenListQuery = useTokenList();
-	const tokenList = useMemo(() => (tokenListQuery.isSuccess ? tokenListQuery.data ?? null : null), [
-		tokenListQuery.isSuccess,
-		tokenListQuery.data,
-	]);
-
-	const SUPPORTED_PROTOCOLS = ['UNI', 'COMP', 'AAVE', '1INCH'];
 
 	const memberColumns = useMemo(() => {
 		const columns = [
@@ -77,17 +68,8 @@ const HomePage: React.FC = () => {
 				</BoxContainer>
 				<Header title={t('delegation.title')} />
 				<StyledGrid>
-					{SUPPORTED_PROTOCOLS.map((symbol, i) => {
-						if (tokenList) {
-							return (
-								<ProtocolBox
-									key={i}
-									tokenInfo={tokenList[symbol]}
-									votingPower={'0'}
-									delegated={'0'}
-								/>
-							);
-						} else return <StyledSpinner src={Spinner} />;
+					{protocols.map((protocol, i) => {
+						return <ProtocolBox key={i} tokenInfo={protocol} votingPower={'0'} delegated={'0'} />;
 					})}
 				</StyledGrid>
 				<Header title={t('members.title')} />
@@ -140,10 +122,4 @@ const StyledParagraph = styled(Paragraph)`
 	font-family: ${(props) => props.theme.fonts.regular};
 	color: ${(props) => props.theme.colors.white};
 	text-transform: none;
-`;
-
-// @ts-ignore
-const StyledSpinner = styled(Svg)`
-	display: block;
-	margin: 30px auto;
 `;

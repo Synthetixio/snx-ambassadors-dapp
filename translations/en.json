@@ -21,9 +21,19 @@
 		}
 	},
 	"protocol": {
-		"vote-weight": "Total voting weight",
-		"options": "Select an option",
 		"delegate": {
+			"title": "Delegate {{ticker}}",
+			"vote-weight": "Total voting weight",
+			"options": "Select an option",
+			"stats": {
+				"votes": "Votes",
+				"delegators": "Delegators"
+			},
+			"withdraw": {
+				"title": "Withdraw your delegation",
+				"helper": "Withdrawing sets the delegate to your own address",
+				"button": "Withdraw"
+			},
 			"direct": {
 				"title": "Delegate your vote",
 				"description": "Delegate your voting power to the Synthetix Ambassadors. By clicking the button below, you will be calling the delegate() function on the {{ticker}} contract found <0>here</0>. This will delegate your UNI to the Synthetix Ambassadors's multisig address.",
@@ -36,14 +46,8 @@
 				"button": "Delegate by signature"
 			}
 		},
-		"stats": {
-			"votes": "Votes",
-			"delegators": "Delegators"
-		},
-		"withdraw": {
-			"title": "Withdraw your delegation",
-			"helper": "Withdrawing sets the delegate to your own address",
-			"button": "Withdraw"
+		"activity": {
+			"title": "Voting Activity"
 		}
 	},
 	"common": {

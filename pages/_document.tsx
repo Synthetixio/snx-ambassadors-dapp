@@ -4,7 +4,6 @@ import { mediaStyles } from 'styles/media';
 
 const PRELOADED_FONTS = [
 	'/fonts/GT-America-Mono-Bold.woff2',
-	'/fonts/GT-America-Extended-Bold.woff2',
 	'/fonts/GT-America-Condensed-Medium.woff2',
 	'/fonts/GT-America-Condensed-Bold.woff2',
 	'/fonts/Inter-Regular.woff2',

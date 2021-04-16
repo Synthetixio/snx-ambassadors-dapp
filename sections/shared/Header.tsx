@@ -28,7 +28,6 @@ const Header: FC = () => {
 	const truncatedWalletAddress = useRecoilValue(truncatedWalletAddressState);
 	const isWalletConnected = useRecoilValue(isWalletConnectedState);
 	const network = useRecoilValue(networkState);
-	const isL2 = network?.useOvm ?? false;
 
 	const toggleMenu = () => setMenuOpen(!menuOpen);
 
