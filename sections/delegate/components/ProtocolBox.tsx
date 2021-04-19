@@ -8,11 +8,12 @@ import ViewIcon from 'assets/svg/view-eye.svg';
 import Link from 'next/link';
 import ROUTES from 'constants/routes';
 import { Token } from 'constants/protocols';
+import { formatNumber } from 'utils/formatters/number';
 
 interface ProtocolBoxProps {
 	tokenInfo: Token;
 	votingPower: number;
-	delegated: string;
+	delegated: number;
 }
 
 const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, delegated }) => {
@@ -26,11 +27,11 @@ const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, deleg
 			<DataRow>
 				<DataCol rightSide={false}>
 					<p>{t('delegation.box.power')}</p>
-					<span>{votingPower}</span>
+					<span>{formatNumber(votingPower)}</span>
 				</DataCol>
 				<DataCol rightSide={true}>
 					<p>{t('delegation.box.delegated')}</p>
-					<span>{delegated}</span>
+					<span>{formatNumber(delegated)}</span>
 				</DataCol>
 			</DataRow>
 			<Link href={ROUTES.Protocol(tokenInfo.symbol)}>

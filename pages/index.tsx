@@ -10,11 +10,13 @@ import { CellProps } from 'react-table';
 import ProtocolBox from 'sections/delegate/components/ProtocolBox';
 import { protocols, SupportedProtocol } from 'constants/protocols';
 import useProtocolDelegateData from 'hooks/useDelegateInfoForProtocols';
+import useProtocolDelegatorData from 'hooks/useDelegatorInfoForProtocols';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
 
 	const protocolDelegates = useProtocolDelegateData();
+	const protocolDelegators = useProtocolDelegatorData();
 
 	const memberColumns = useMemo(() => {
 		const columns = [
@@ -77,7 +79,7 @@ const HomePage: React.FC = () => {
 								key={i}
 								tokenInfo={protocol}
 								votingPower={protocolDelegates[protocol.symbol]?.data?.delegatedVotes ?? 0}
-								delegated={'0'}
+								delegated={protocolDelegators[protocol.symbol]?.data ?? 0}
 							/>
 						);
 					})}

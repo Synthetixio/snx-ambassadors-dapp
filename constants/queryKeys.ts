@@ -4,6 +4,12 @@ import { SupportedProtocol } from './protocols';
 export const QUERY_KEYS = {
 	Delegate: {
 		DelegateInfo: (protocolId: SupportedProtocol) => ['delegate', 'delegateInfo', protocolId],
+		DelegatorInfo: (protocolId: SupportedProtocol, walletAddress: string) => [
+			'delegate',
+			'delegatorInfo',
+			protocolId,
+			walletAddress,
+		],
 	},
 };
 

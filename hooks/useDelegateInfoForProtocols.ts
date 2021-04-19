@@ -1,13 +1,13 @@
 import { SupportedProtocol } from 'constants/protocols';
 import { DelegateInfo, useDelegateInfoQuery } from 'queries/useDelegateInfoQuery';
 
-type LPData = {
+type DelegateData = {
 	[name: string]: {
 		data: DelegateInfo | undefined;
 	};
 };
 
-const useProtocolDelegateData = (): LPData => {
+const useProtocolDelegateData = (): DelegateData => {
 	const uniInfo = useDelegateInfoQuery(SupportedProtocol.UNI);
 	const compInfo = useDelegateInfoQuery(SupportedProtocol.COMP);
 	const aaveInfo = useDelegateInfoQuery(SupportedProtocol.AAVE);

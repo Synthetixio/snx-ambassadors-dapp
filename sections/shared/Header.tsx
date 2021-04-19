@@ -117,7 +117,7 @@ const Header: FC = () => {
 export default Header;
 
 const HeaderContainer = styled.div`
-	height: 50px;
+	height: 75px;
 	padding-top: 35px;
 	position: fixed;
 	font-style: normal;
