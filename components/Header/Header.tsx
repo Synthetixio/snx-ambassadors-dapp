@@ -11,7 +11,7 @@ type HeaderProps = {
 	title: string;
 	first?: boolean;
 	back?: boolean;
-	protocol: Token;
+	protocol?: Token;
 };
 
 const Header: FC<HeaderProps> = ({ title, first, back, protocol }) => {

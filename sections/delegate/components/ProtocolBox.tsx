@@ -11,7 +11,7 @@ import { Token } from 'constants/protocols';
 
 interface ProtocolBoxProps {
 	tokenInfo: Token;
-	votingPower: string;
+	votingPower: number;
 	delegated: string;
 }
 

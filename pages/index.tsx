@@ -8,10 +8,13 @@ import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
 import ProtocolBox from 'sections/delegate/components/ProtocolBox';
-import { protocols } from 'constants/protocols';
+import { protocols, SupportedProtocol } from 'constants/protocols';
+import useProtocolDelegateData from 'hooks/useDelegateInfoForProtocols';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
+
+	const protocolDelegates = useProtocolDelegateData();
 
 	const memberColumns = useMemo(() => {
 		const columns = [
@@ -69,7 +72,14 @@ const HomePage: React.FC = () => {
 				<Header title={t('delegation.title')} />
 				<StyledGrid>
 					{protocols.map((protocol, i) => {
-						return <ProtocolBox key={i} tokenInfo={protocol} votingPower={'0'} delegated={'0'} />;
+						return (
+							<ProtocolBox
+								key={i}
+								tokenInfo={protocol}
+								votingPower={protocolDelegates[protocol.symbol]?.data?.delegatedVotes ?? 0}
+								delegated={'0'}
+							/>
+						);
 					})}
 				</StyledGrid>
 				<Header title={t('members.title')} />
