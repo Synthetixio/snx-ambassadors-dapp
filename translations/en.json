@@ -29,6 +29,12 @@
 				"votes": "Votes",
 				"delegators": "Delegators"
 			},
+			"user": {
+				"available": "Available votes",
+				"status": "Status",
+				"not-delegated": "Not delegated",
+				"delegated": "Delegated"
+			},
 			"withdraw": {
 				"title": "Withdraw your delegation",
 				"helper": "Withdrawing sets the delegate to your own address",

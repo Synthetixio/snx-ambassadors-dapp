@@ -1,15 +1,19 @@
-import { NetworkId } from '@synthetixio/contracts-interface';
 import { SupportedProtocol } from './protocols';
 
 export const QUERY_KEYS = {
 	Delegate: {
-		DelegateInfo: (protocolId: SupportedProtocol) => ['delegate', 'delegateInfo', protocolId],
-		DelegatorInfo: (protocolId: SupportedProtocol, walletAddress: string) => [
-			'delegate',
-			'delegatorInfo',
+		Info: (protocolId: SupportedProtocol) => ['delegate', 'info', protocolId],
+	},
+	Delegator: {
+		Info: (protocolId: SupportedProtocol, walletAddress: string) => [
+			'delegator',
+			'info',
 			protocolId,
 			walletAddress,
 		],
+	},
+	Protocol: {
+		Global: (protocolId: SupportedProtocol) => ['protocol', 'global', protocolId],
 	},
 };
 

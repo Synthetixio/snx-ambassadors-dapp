@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import styled from 'styled-components';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
-import Img, { Svg } from 'react-optimized-image';
+import { Svg } from 'react-optimized-image';
 import CaretLeft from 'assets/svg/caret-left.svg';
 import { useRouter } from 'next/router';
 import { FlexDivRow } from 'styles/common';
-import { protocolsBySymbol, Token } from 'constants/protocols';
+import { Token } from 'constants/protocols';
 
 type HeaderProps = {
 	title: string;

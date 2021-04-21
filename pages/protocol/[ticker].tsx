@@ -6,6 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Header from 'components/Header';
 import { Trans, useTranslation } from 'react-i18next';
 import Button from 'components/Button';
+import { ethers } from 'ethers';
 
 import {
 	Divider,
@@ -27,9 +28,16 @@ import CheckIcon from 'assets/svg/check.svg';
 import CrossIcon from 'assets/svg/cross.svg';
 import FailureIcon from 'assets/svg/failure.svg';
 import SuccessIcon from 'assets/svg/success.svg';
-import { protocols, protocolsBySymbol, SupportedProtocol } from 'constants/protocols';
+import SpinnerIcon from 'assets/svg/loader.svg';
 
-const VOTING_WEIGHT = 0.6;
+import { SupportedProtocol, protocols, protocolsBySymbol } from 'constants/protocols';
+import { formatNumber, formatPercent } from 'utils/formatters/number';
+import { ambassadorMultisig, ambassadorENS } from 'constants/ambassadorMultisig';
+import { useProtocolGlobalDataQuery, GlobalData } from 'queries/useProtocolGlobalDataQuery';
+import { DelegateInfo, useDelegateInfoQuery } from 'queries/useDelegateInfoQuery';
+import { useDelegatorInfoQuery } from 'queries/useDelegatorInfoQuery';
+import { useRecoilValue } from 'recoil';
+import { isWalletConnectedState, walletAddressState } from 'store/wallet';
 
 interface ProposalDetail {
 	target: string;
@@ -64,61 +72,23 @@ export interface ProposalData {
 	}[];
 }
 
-const data01 = [
-	{
-		name: 'Group A',
-		value: VOTING_WEIGHT,
-	},
-	{
-		name: 'Group B',
-		value: 1 - VOTING_WEIGHT,
-	},
-];
-
 const Protocol: React.FC = () => {
-	const router = useRouter();
 	const { t } = useTranslation();
+	const router = useRouter();
 	const theme = useTheme();
+	const { ticker } = router.query;
 
 	const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
+	const walletAddress = useRecoilValue(walletAddressState);
+	const isWalletConnected = useRecoilValue(isWalletConnectedState);
 
-	const { ticker }: any = router.query;
+	const protocolTicker = ticker as SupportedProtocol;
 
-	const COLORS = [theme.colors.blueHover, 'rgba(255, 255, 255, 0.24)'];
+	const protocolObj = protocolsBySymbol();
 
-	const multisigAddress = '0xDEAf1d7775D198Dfa5eD9f1df7FA664cFDA920F6';
-	const ens = 'snxambassador.eth';
-	const votes = 120;
-	const numOfDelegators = 123;
-	const contractLink = `https://etherscan.io/address/${multisigAddress}#code`;
-
-	const proposals: ProposalData[] = [
-		{
-			againstVotes: [],
-			title: 'Exit LBP & add Uniswap liquidity',
-			description:
-				'# Exit LBP & add Uniswap liquidity\n\nThis is a proposal to complete the LBP event by exiting the pool. To maintain\na liquid market, 4M USDC and 400K RAD are added to a Uniswap trading pair.\n\nIf executed, this proposal will:\n\n1. Remove liquidity from the LBP, by swapping the RADP pool tokens for the underlying assets (RAD and USDC)\n2. Return the 3.5M USDC loan to the Radicle Foundation\n3. Approve Uniswap router proxy for 5M USDC\n4. Approve Uniswap router proxy for 500K RAD\n5. Add liquidity to Uniswap RAD/USDC pair via the Uniswap router\n\nAfter execution, the Timelock holds all Uniswap LP tokens for the RAD/USDC pair.\n\nTo prevent front-running, the RAD/USDC balances are set through the Uniswap\nrouter *proxy* contract, deployed at `0xB76FC4EbE4fC0CC34AF440Ad79565A68Bfcb095e`.\nOnly the Radicle Foundation can set these balances, via the `setLiquidity`\nfunction. This contract function must be called as close as possible to the\nexecution of this proposal, to provide liquidity at the correct market price.\n\n## Notes\n\n* For this proposal to go through, the LBP must have at least 1M RAD and 20M USDC.\n* `0x750dD34Fb165bE682fAe445793AB9ab9729CDAa3` is the CRP Pool.\n* `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` is the USDC contract.\n* `0x31c8EAcBFFdD875c74b94b077895Bd78CF1E64A3` is the RAD contract.\n* `0x055E29502153aEDcFDaE8Fc15a710FF6fb5e10C9` is the Radicle Foundation address.\n* `0xB76FC4EbE4fC0CC34AF440Ad79565A68Bfcb095e` is the Uniswap router proxy contract.',
-			forVotes: [],
-			id: '4',
-			proposer: '0x2f0963e77ca6ac0c2dad1bf4147b6b40e0dd8728',
-			signatures: [
-				'exitPool(uint256,uint256[])',
-				'transfer(address,uint256)',
-				'approve(address,uint256)',
-				'approve(address,uint256)',
-				'addLiquidity(address,address)',
-			],
-			status: 'executed',
-			targets: [
-				'0x750dd34fb165be682fae445793ab9ab9729cdaa3',
-				'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-				'0x31c8eacbffdd875c74b94b077895bd78cf1e64a3',
-				'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-				'0xb76fc4ebe4fc0cc34af440ad79565a68bfcb095e',
-			],
-			values: ['0', '0', '0', '0', '0'],
-		},
-	];
+	const delegateInfo = useDelegateInfoQuery(SupportedProtocol[protocolTicker]);
+	const delegatorInfo = useDelegatorInfoQuery(SupportedProtocol[protocolTicker]);
+	const globalInfo = useProtocolGlobalDataQuery(SupportedProtocol[protocolTicker]);
 
 	useEffect(() => {
 		if (copiedAddress) {
@@ -128,83 +98,161 @@ const Protocol: React.FC = () => {
 		}
 	}, [copiedAddress]);
 
+	const returnPieChart = (delegate: DelegateInfo, global: GlobalData) => {
+		const COLORS = [theme.colors.blueHover, 'rgba(255, 255, 255, 0.24)'];
+
+		const data = [
+			{
+				name: 'Global weight',
+				value: 1 - delegate.delegatedVotes / global.delegatedVotes,
+			},
+			{
+				name: 'Weight owned by delegate',
+				value: delegate.delegatedVotes / global.delegatedVotes,
+			},
+		];
+
+		const percentage = formatPercent(delegate.delegatedVotes / global.delegatedVotes);
+
+		return (
+			<PieChart width={250} height={250}>
+				<Pie
+					data={data}
+					dataKey="value"
+					nameKey="name"
+					innerRadius={80}
+					outerRadius={100}
+					fill={theme.colors.blue}
+				>
+					{data.map((_, index: number) => (
+						<Cell key={`cell-${index}`} fill={COLORS[index]} stroke="none" />
+					))}
+					<Label
+						value={`${percentage}`}
+						position="center"
+						fontSize={22}
+						fontFamily={theme.fonts.expanded}
+						fill={theme.colors.white}
+					/>
+				</Pie>
+			</PieChart>
+		);
+	};
+
 	return (
 		<>
 			<Header
-				title={t('protocol.delegate.title', { ticker: ticker })}
+				title={t('protocol.delegate.title', { ticker: protocolTicker })}
 				first={true}
 				back={true}
-				protocol={protocols.filter((protocol) => protocol.symbol === SupportedProtocol[ticker])[0]}
+				protocol={
+					protocols.filter((protocol) => protocol.symbol === SupportedProtocol[protocolTicker])[0]
+				}
 			/>
 			<BoxContainer>
 				<StyledCard>
-					<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
-					<PieChart width={250} height={250}>
-						<Pie
-							data={data01}
-							dataKey="value"
-							nameKey="name"
-							innerRadius={80}
-							outerRadius={100}
-							fill={theme.colors.blue}
-						>
-							{data01.map((entry, index: number) => (
-								<Cell key={`cell-${index}`} fill={COLORS[index]} stroke="none" />
-							))}
-							<Label
-								value={`${VOTING_WEIGHT * 100}%`}
-								position="center"
-								fontSize={22}
-								fontFamily={theme.fonts.expanded}
-								fill={theme.colors.white}
-							/>
-						</Pie>
-					</PieChart>
-					<MultisigValue>{ens}</MultisigValue>
-					<AddressRow>
-						<p>{multisigAddress}</p>
-						<CopyToClipboard text={multisigAddress} onCopy={() => setCopiedAddress(true)}>
-							{copiedAddress ? (
-								<Svg
-									src={CheckIcon}
-									width="16"
-									height="16"
-									viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
-								/>
+					{delegateInfo.data && globalInfo.data ? (
+						<>
+							<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
+							{returnPieChart(delegateInfo.data, globalInfo.data)}
+							<MultisigValue>{ambassadorENS}</MultisigValue>
+							<AddressRow>
+								<p>{ambassadorMultisig}</p>
+								<CopyToClipboard text={ambassadorMultisig} onCopy={() => setCopiedAddress(true)}>
+									{copiedAddress ? (
+										<Svg
+											src={CheckIcon}
+											width="16"
+											height="16"
+											viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
+										/>
+									) : (
+										<Svg
+											width="16"
+											height="16"
+											viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
+											src={CopyIcon}
+										/>
+									)}
+								</CopyToClipboard>
+							</AddressRow>
+							<StatsRow>
+								<>
+									<p>
+										{formatNumber(delegateInfo.data.delegatedVotes)}
+										<span>{t('protocol.delegate.stats.votes')}</span>
+									</p>
+								</>
+								<>
+									<p>
+										{formatNumber(delegateInfo.data.tokenHoldersRepresentedAmount)}
+										<span>{t('protocol.delegate.stats.delegators')}</span>
+									</p>
+								</>
+							</StatsRow>
+							<StyledDivider />
+
+							{delegatorInfo.data ? (
+								isWalletConnected && walletAddress ? (
+									<>
+										<AddressRow>
+											<p>{ethers.utils.getAddress(walletAddress)}</p>
+											<CopyToClipboard text={walletAddress} onCopy={() => setCopiedAddress(true)}>
+												{copiedAddress ? (
+													<Svg
+														src={CheckIcon}
+														width="16"
+														height="16"
+														viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
+													/>
+												) : (
+													<Svg
+														width="16"
+														height="16"
+														viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
+														src={CopyIcon}
+													/>
+												)}
+											</CopyToClipboard>
+										</AddressRow>
+										<StatsRow>
+											<p>
+												{t('protocol.delegate.user.available')}:
+												<span>{formatNumber(delegatorInfo.data)}</span>
+											</p>
+											<p>
+												{t('protocol.delegate.user.status')}:
+												<span>
+													{delegatorInfo.data === 0
+														? t('protocol.delegate.user.not-delegated')
+														: t('protocol.delegate.user.delegated')}
+												</span>
+											</p>
+										</StatsRow>
+									</>
+								) : (
+									<p>Connect Wallet</p>
+								)
 							) : (
-								<Svg src={CopyIcon} />
+								<StyledSpinner src={SpinnerIcon} />
 							)}
-						</CopyToClipboard>
-					</AddressRow>
-					<StatsRow>
-						<>
-							<p>
-								{votes}
-								<span>{t('protocol.delegate.stats.votes')}</span>
-							</p>
+
+							{delegatorInfo.data !== 0 && (
+								<>
+									<WithdrawRow>
+										<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
+										<WithdrawButton>
+											<Svg src={CrossIcon} />
+											{t('protocol.delegate.withdraw.button')}
+										</WithdrawButton>
+									</WithdrawRow>
+									<RowHelper>{t('protocol.delegate.withdraw.helper')}</RowHelper>
+								</>
+							)}
 						</>
-						<>
-							<p>
-								{numOfDelegators}
-								<span>{t('protocol.delegate.stats.delegators')}</span>
-							</p>
-						</>
-					</StatsRow>
-					<Divider />
-
-					<StatusRow>
-						<p>Avaliable votes: 103 </p>
-						<p>Status: 103 delegated</p>
-					</StatusRow>
-
-					<WithdrawRow>
-						<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
-						<WithdrawButton>
-							<Svg src={CrossIcon} />
-
-							{t('protocol.delegate.withdraw.button')}
-						</WithdrawButton>
-					</WithdrawRow>
+					) : (
+						<StyledSpinner src={SpinnerIcon} />
+					)}
 				</StyledCard>
 				<StyledCard>
 					<Subtitle>{t('protocol.delegate.options')}</Subtitle>
@@ -214,7 +262,11 @@ const Protocol: React.FC = () => {
 							<Trans
 								i18nKey="protocol.delegate.direct.description"
 								values={{ ticker }}
-								components={[<StyledLink href={contractLink} />]}
+								components={[
+									<StyledLink
+										href={`https://etherscan.io/address/${protocolObj[protocolTicker].address}#code`}
+									/>,
+								]}
 							/>
 						</BlockDescription>
 						<BlockButton variant="primary">{t('protocol.delegate.direct.button')}</BlockButton>
@@ -230,7 +282,7 @@ const Protocol: React.FC = () => {
 			<Header title={t('protocol.activity.title')} />
 			<BoxContainer>
 				<ProposalContainer>
-					{proposals.map((proposal, i) => {
+					{/* {proposals.map((proposal, i) => {
 						const favour = true;
 						const voteCount = 1231232;
 						return (
@@ -247,7 +299,7 @@ const Protocol: React.FC = () => {
 								</ProposalRight>
 							</ProposalRow>
 						);
-					})}
+					})} */}
 				</ProposalContainer>
 			</BoxContainer>
 		</>
@@ -383,12 +435,12 @@ const BlockHelper = styled.div`
 	text-align: center;
 `;
 
-const StatusRow = styled(FlexDivRow)`
+const RowHelper = styled.div`
+	font-family: ${(props) => props.theme.fonts.regular};
+	font-size: 12px;
+	color: ${(props) => props.theme.colors.gray};
+	text-align: left;
 	width: 100%;
-	justify-content: flex-start;
-
-	p {
-	}
 `;
 
 const ProposalContainer = styled(GradientCard)`
@@ -436,4 +488,13 @@ const ProposalRight = styled(FlexDivRow)`
 	svg {
 		transform: scale(0.4);
 	}
+`;
+
+const StyledSpinner = styled(Svg)`
+	display: block;
+	margin: 30px auto;
+`;
+
+const StyledDivider = styled(Divider)`
+	margin-bottom: 16px;
 `;

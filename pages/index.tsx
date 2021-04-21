@@ -8,7 +8,7 @@ import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
 import ProtocolBox from 'sections/delegate/components/ProtocolBox';
-import { protocols, SupportedProtocol } from 'constants/protocols';
+import { protocols } from 'constants/protocols';
 import useProtocolDelegateData from 'hooks/useDelegateInfoForProtocols';
 import useProtocolDelegatorData from 'hooks/useDelegatorInfoForProtocols';
 
