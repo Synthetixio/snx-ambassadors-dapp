@@ -116,6 +116,7 @@ const ViewButton = styled(Button)`
 	text-transform: uppercase;
 	font-size: 12px;
 
+	padding-top: 24px;
 	margin: 16px 0px;
 
 	svg {

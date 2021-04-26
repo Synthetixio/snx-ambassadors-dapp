@@ -26,7 +26,8 @@ const Page = styled.div``;
 
 const Section = styled.section`
 	min-height: 90vh;
-	padding: 20px 0px;
+	padding-top: 20px;
+	padding-bottom: 80px;
 `;
 
 const GlobalStyle = createGlobalStyle`

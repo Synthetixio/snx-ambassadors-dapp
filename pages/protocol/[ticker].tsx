@@ -38,6 +38,7 @@ import { DelegateInfo, useDelegateInfoQuery } from 'queries/useDelegateInfoQuery
 import { useDelegatorInfoQuery } from 'queries/useDelegatorInfoQuery';
 import { useRecoilValue } from 'recoil';
 import { isWalletConnectedState, walletAddressState } from 'store/wallet';
+import { Proposal, useProtocolProposals } from 'queries/useProposals';
 
 interface ProposalDetail {
 	target: string;
@@ -89,6 +90,7 @@ const Protocol: React.FC = () => {
 	const delegateInfo = useDelegateInfoQuery(SupportedProtocol[protocolTicker]);
 	const delegatorInfo = useDelegatorInfoQuery(SupportedProtocol[protocolTicker]);
 	const globalInfo = useProtocolGlobalDataQuery(SupportedProtocol[protocolTicker]);
+	const proposals = useProtocolProposals(SupportedProtocol[protocolTicker]);
 
 	useEffect(() => {
 		if (copiedAddress) {
@@ -104,11 +106,11 @@ const Protocol: React.FC = () => {
 		const data = [
 			{
 				name: 'Global weight',
-				value: 1 - delegate.delegatedVotes / global.delegatedVotes,
+				value: delegate.delegatedVotes / global.delegatedVotes,
 			},
 			{
 				name: 'Weight owned by delegate',
-				value: delegate.delegatedVotes / global.delegatedVotes,
+				value: 1 - delegate.delegatedVotes / global.delegatedVotes,
 			},
 		];
 
@@ -139,6 +141,54 @@ const Protocol: React.FC = () => {
 		);
 	};
 
+	const returnProposals = (proposals: Proposal[], delegateInfo: DelegateInfo) => {
+		let validProposals = [] as any;
+
+		delegateInfo.votes.forEach((vote) => {
+			proposals.forEach((proposal) => {
+				if (vote.proposal === parseInt(proposal.id)) {
+					validProposals.push({
+						proposalInfo: {
+							...proposal,
+						},
+						delegateVote: {
+							...vote,
+						},
+					});
+				}
+			});
+		});
+
+		if (validProposals.length > 0) {
+			return validProposals.map((proposal: any, i: number) => {
+				return (
+					<ProposalRow key={i}>
+						<ProposalLeft>
+							<p>{proposal.proposalInfo.description.split(/# |\n/g)[1] || 'Untitled'}</p>
+							<StatusLabel status={proposal.proposalInfo.status.toLowerCase()}>
+								{proposal.proposalInfo.status}
+							</StatusLabel>
+						</ProposalLeft>
+						<ProposalRight>
+							<p>
+								Assigned {formatNumber(proposal.delegateVote.votes)} votes{' '}
+								{proposal.delegateVote.support ? 'in favour' : 'against'}
+							</p>
+							{proposal.delegateVote.support ? (
+								<Svg src={SuccessIcon} />
+							) : (
+								<Svg src={FailureIcon} />
+							)}
+						</ProposalRight>
+					</ProposalRow>
+				);
+			});
+		} else {
+			// @TOOD add empty state here
+			return <p>Empty</p>;
+		}
+	};
+
 	return (
 		<>
 			<Header
@@ -151,49 +201,49 @@ const Protocol: React.FC = () => {
 			/>
 			<BoxContainer>
 				<StyledCard>
-					{delegateInfo.data && globalInfo.data ? (
-						<>
-							<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
-							{returnPieChart(delegateInfo.data, globalInfo.data)}
-							<MultisigValue>{ambassadorENS}</MultisigValue>
-							<AddressRow>
-								<p>{ambassadorMultisig}</p>
-								<CopyToClipboard text={ambassadorMultisig} onCopy={() => setCopiedAddress(true)}>
-									{copiedAddress ? (
-										<Svg
-											src={CheckIcon}
-											width="16"
-											height="16"
-											viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
-										/>
-									) : (
-										<Svg
-											width="16"
-											height="16"
-											viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
-											src={CopyIcon}
-										/>
-									)}
-								</CopyToClipboard>
-							</AddressRow>
-							<StatsRow>
-								<>
-									<p>
-										{formatNumber(delegateInfo.data.delegatedVotes)}
-										<span>{t('protocol.delegate.stats.votes')}</span>
-									</p>
-								</>
-								<>
-									<p>
-										{formatNumber(delegateInfo.data.tokenHoldersRepresentedAmount)}
-										<span>{t('protocol.delegate.stats.delegators')}</span>
-									</p>
-								</>
-							</StatsRow>
-							<StyledDivider />
+					{!delegateInfo.isLoading && !globalInfo.isLoading ? (
+						delegateInfo.data && globalInfo.data ? (
+							<>
+								<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
+								{returnPieChart(delegateInfo.data, globalInfo.data)}
+								<MultisigValue>{ambassadorENS}</MultisigValue>
+								<AddressRow>
+									<p>{ambassadorMultisig}</p>
+									<CopyToClipboard text={ambassadorMultisig} onCopy={() => setCopiedAddress(true)}>
+										{copiedAddress ? (
+											<Svg
+												src={CheckIcon}
+												width="16"
+												height="16"
+												viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
+											/>
+										) : (
+											<Svg
+												width="16"
+												height="16"
+												viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
+												src={CopyIcon}
+											/>
+										)}
+									</CopyToClipboard>
+								</AddressRow>
+								<StatsRow>
+									<>
+										<p>
+											{formatNumber(delegateInfo.data.delegatedVotes)}
+											<span>{t('protocol.delegate.stats.votes')}</span>
+										</p>
+									</>
+									<>
+										<p>
+											{formatNumber(delegateInfo.data.tokenHoldersRepresentedAmount)}
+											<span>{t('protocol.delegate.stats.delegators')}</span>
+										</p>
+									</>
+								</StatsRow>
+								<StyledDivider />
 
-							{delegatorInfo.data ? (
-								isWalletConnected && walletAddress ? (
+								{isWalletConnected && walletAddress && delegateInfo.data ? (
 									<>
 										<AddressRow>
 											<p>{ethers.utils.getAddress(walletAddress)}</p>
@@ -218,7 +268,7 @@ const Protocol: React.FC = () => {
 										<StatsRow>
 											<p>
 												{t('protocol.delegate.user.available')}:
-												<span>{formatNumber(delegatorInfo.data)}</span>
+												<span>{formatNumber(delegatorInfo.data ?? 0)}</span>
 											</p>
 											<p>
 												{t('protocol.delegate.user.status')}:
@@ -231,25 +281,26 @@ const Protocol: React.FC = () => {
 										</StatsRow>
 									</>
 								) : (
-									<p>Connect Wallet</p>
-								)
-							) : (
-								<StyledSpinner src={SpinnerIcon} />
-							)}
-
-							{delegatorInfo.data !== 0 && (
-								<>
-									<WithdrawRow>
-										<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
-										<WithdrawButton>
-											<Svg src={CrossIcon} />
-											{t('protocol.delegate.withdraw.button')}
-										</WithdrawButton>
-									</WithdrawRow>
-									<RowHelper>{t('protocol.delegate.withdraw.helper')}</RowHelper>
-								</>
-							)}
-						</>
+									<AddressRow>
+										<p>Connect Wallet</p>
+									</AddressRow>
+								)}
+								{delegatorInfo.data !== 0 && (
+									<>
+										<WithdrawRow>
+											<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
+											<WithdrawButton>
+												<Svg src={CrossIcon} />
+												{t('protocol.delegate.withdraw.button')}
+											</WithdrawButton>
+										</WithdrawRow>
+										<RowHelper>{t('protocol.delegate.withdraw.helper')}</RowHelper>
+									</>
+								)}
+							</>
+						) : (
+							<StyledSpinner src={SpinnerIcon} />
+						)
 					) : (
 						<StyledSpinner src={SpinnerIcon} />
 					)}
@@ -264,7 +315,11 @@ const Protocol: React.FC = () => {
 								values={{ ticker }}
 								components={[
 									<StyledLink
-										href={`https://etherscan.io/address/${protocolObj[protocolTicker].address}#code`}
+										href={
+											protocolTicker
+												? `https://etherscan.io/address/${protocolObj[protocolTicker].address}#code`
+												: ''
+										}
 									/>,
 								]}
 							/>
@@ -282,24 +337,13 @@ const Protocol: React.FC = () => {
 			<Header title={t('protocol.activity.title')} />
 			<BoxContainer>
 				<ProposalContainer>
-					{/* {proposals.map((proposal, i) => {
-						const favour = true;
-						const voteCount = 1231232;
-						return (
-							<ProposalRow key={i}>
-								<ProposalLeft>
-									<p>{proposal.title}</p>
-									<StatusLabel status={proposal.status}>{proposal.status}</StatusLabel>
-								</ProposalLeft>
-								<ProposalRight>
-									<p>
-										Assigned {voteCount} votes {favour ? 'in favour' : 'against'}
-									</p>
-									{favour ? <Svg src={SuccessIcon} /> : <Svg src={FailureIcon} />}
-								</ProposalRight>
-							</ProposalRow>
-						);
-					})} */}
+					{!proposals.isLoading ? (
+						proposals.data &&
+						delegateInfo.data &&
+						returnProposals(proposals.data, delegateInfo.data)
+					) : (
+						<StyledSpinner src={SpinnerIcon} />
+					)}
 				</ProposalContainer>
 			</BoxContainer>
 		</>
@@ -454,6 +498,7 @@ const ProposalRow = styled(FlexDivRow)`
 	justify-content: space-between;
 
 	padding-bottom: 16px;
+	padding-top: 16px;
 	border-bottom: 1px solid ${(props) => props.theme.colors.gray};
 `;
 

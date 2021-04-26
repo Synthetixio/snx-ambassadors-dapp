@@ -17,7 +17,7 @@ export const useDelegatorInfoQuery = (protocolId: SupportedProtocol) => {
 	const walletAddress = useRecoilValue(walletAddressState);
 	const { provider } = Connector.useContainer();
 
-	return useQuery<number | undefined>(
+	return useQuery<number>(
 		QUERY_KEYS.Delegator.Info(protocolId, walletAddress ?? ''),
 		async () => {
 			const protocolsObj = protocolsBySymbol();

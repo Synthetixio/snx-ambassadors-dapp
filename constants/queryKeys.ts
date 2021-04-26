@@ -14,6 +14,7 @@ export const QUERY_KEYS = {
 	},
 	Protocol: {
 		Global: (protocolId: SupportedProtocol) => ['protocol', 'global', protocolId],
+		Proposals: (protocolId: SupportedProtocol) => ['protocol', 'proposals', protocolId],
 	},
 };
 

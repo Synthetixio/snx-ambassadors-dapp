@@ -13,7 +13,7 @@
 	},
 	"members": {
 		"title": "Members",
-		"helper": "The following ambassadors operate out of a Gnosis Multisig found here <0>0x1231</0>",
+		"helper": "The following ambassadors operate out of a Gnosis Multisig found here <0>{{ambassadorMultisig}}</0>",
 		"table": {
 			"name": "name",
 			"address": "address",

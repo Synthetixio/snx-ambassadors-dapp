@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 import Header from 'components/Header';
-import { useTranslation } from 'react-i18next';
-import { FlexDivRow, Paragraph, GridDiv } from 'styles/common';
+import { Trans, useTranslation } from 'react-i18next';
+import { FlexDivRow, Paragraph, GridDiv, StyledLink, ExternalLink } from 'styles/common';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
@@ -11,6 +11,10 @@ import ProtocolBox from 'sections/delegate/components/ProtocolBox';
 import { protocols } from 'constants/protocols';
 import useProtocolDelegateData from 'hooks/useDelegateInfoForProtocols';
 import useProtocolDelegatorData from 'hooks/useDelegatorInfoForProtocols';
+import { members, ambassadorMultisig } from 'constants/ambassadorMultisig';
+import { Svg } from 'react-optimized-image';
+import LinkIcon from 'assets/svg/link-blue.svg';
+import { ethers } from 'ethers';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -34,7 +38,16 @@ const HomePage: React.FC = () => {
 				Header: <>{t('members.table.address')}</>,
 				accessor: 'address',
 				Cell: (cellProps: CellProps<any>) => {
-					return <StyledParagraph>{cellProps.value}</StyledParagraph>;
+					return (
+						<FlexDivRow>
+							<StyledParagraph>{ethers.utils.getAddress(cellProps.value)}</StyledParagraph>
+							<StyledExternalIcon
+								href={`https://etherscan.io/address/${ethers.utils.getAddress(cellProps.value)}`}
+							>
+								<Svg src={LinkIcon} />
+							</StyledExternalIcon>
+						</FlexDivRow>
+					);
 				},
 				sortable: false,
 				width: 600,
@@ -43,22 +56,6 @@ const HomePage: React.FC = () => {
 
 		return columns;
 	}, [t]);
-
-	// @TODO: add real addresses
-	const data = [
-		{
-			name: 'MiLLiΞ',
-			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
-		},
-		{
-			name: 'farmwell',
-			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
-		},
-		{
-			name: 'SynthaMan',
-			address: '0xf55703751d80476B5ae8d26f7D3b99A1D3FbE69B',
-		},
-	];
 
 	return (
 		<>
@@ -86,13 +83,21 @@ const HomePage: React.FC = () => {
 				</StyledGrid>
 				<Header title={t('members.title')} />
 				<BoxContainer>
-					<StyledParagraph>{t('members.helper')}</StyledParagraph>
+					<StyledParagraph>
+						<Trans
+							i18nKey="members.helper"
+							values={{ ambassadorMultisig }}
+							components={[
+								<StyledLink href={`https://etherscan.io/address/${ambassadorMultisig}`} />,
+							]}
+						/>
+					</StyledParagraph>
 				</BoxContainer>
 				<BoxContainer>
 					<StyledTable
 						palette="primary"
 						columns={memberColumns}
-						data={data}
+						data={members}
 						isLoading={false}
 						showPagination={false}
 					/>
@@ -134,4 +139,8 @@ const StyledParagraph = styled(Paragraph)`
 	font-family: ${(props) => props.theme.fonts.regular};
 	color: ${(props) => props.theme.colors.white};
 	text-transform: none;
+`;
+
+const StyledExternalIcon = styled(ExternalLink)`
+	padding-left: 16px;
 `;
