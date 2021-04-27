@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styled, { useTheme } from 'styled-components';
 import { Svg } from 'react-optimized-image';
@@ -39,6 +39,11 @@ import { useDelegatorInfoQuery } from 'queries/useDelegatorInfoQuery';
 import { useRecoilValue } from 'recoil';
 import { isWalletConnectedState, walletAddressState } from 'store/wallet';
 import { Proposal, useProtocolProposals } from 'queries/useProposals';
+import UNIToken from 'contracts/UNI';
+import AAVEToken from 'contracts/AAVE';
+import { normalizedGasPrice } from 'utils/network';
+import TransactionNotifier from 'containers/TransactionNotifier';
+import Connector from 'containers/Connector';
 
 interface ProposalDetail {
 	target: string;
@@ -83,6 +88,13 @@ const Protocol: React.FC = () => {
 	const walletAddress = useRecoilValue(walletAddressState);
 	const isWalletConnected = useRecoilValue(isWalletConnectedState);
 
+	const { monitorTransaction } = TransactionNotifier.useContainer();
+	const { signer } = Connector.useContainer();
+
+	const [error, setError] = useState<string | null>('');
+
+	const [txHash, setTxHash] = useState<string | null>(null);
+
 	const protocolTicker = ticker as SupportedProtocol;
 
 	const protocolObj = protocolsBySymbol();
@@ -99,6 +111,53 @@ const Protocol: React.FC = () => {
 			}, 2000);
 		}
 	}, [copiedAddress]);
+
+	const handleDelegate = useCallback(async () => {
+		async function delegate() {
+			if (signer) {
+				try {
+					setError(null);
+
+					let contract: ethers.Contract;
+
+					if (protocolTicker === SupportedProtocol.AAVE) {
+						contract = new ethers.Contract(
+							protocolObj[protocolTicker].address,
+							AAVEToken.abi,
+							signer
+						);
+					} else {
+						contract = new ethers.Contract(
+							protocolObj[protocolTicker].address,
+							UNIToken.abi,
+							signer
+						);
+					}
+
+					const gasLimit = await contract.estimateGas.delegate(ambassadorMultisig);
+
+					let transaction = await contract.delegate(ambassadorMultisig, {
+						gasLimit,
+					});
+
+					if (transaction) {
+						setTxHash(transaction.hash);
+						// setTransactionState(Transaction.WAITING);
+						monitorTransaction({
+							txHash: transaction.hash,
+							// onTxConfirmed: () => setTransactionState(Transaction.SUCCESS),
+						});
+						// setTxModalOpen(false);
+					}
+				} catch (e) {
+					console.log(e);
+					// setTransactionState(Transaction.PRESUBMIT);
+					setError(e.message);
+				}
+			}
+		}
+		delegate();
+	}, [monitorTransaction, protocolObj, protocolTicker]);
 
 	const returnPieChart = (delegate: DelegateInfo, global: GlobalData) => {
 		const COLORS = [theme.colors.blueHover, 'rgba(255, 255, 255, 0.24)'];
@@ -324,14 +383,16 @@ const Protocol: React.FC = () => {
 								]}
 							/>
 						</BlockDescription>
-						<BlockButton variant="primary">{t('protocol.delegate.direct.button')}</BlockButton>
+						<BlockButton onClick={() => handleDelegate()} variant="primary">
+							{t('protocol.delegate.direct.button')}
+						</BlockButton>
 					</Block>
-					<Block>
+					{/* <Block>
 						<BlockTitle>{t('protocol.delegate.sig.title')}</BlockTitle>
 						<BlockDescription>{t('protocol.delegate.sig.description')}</BlockDescription>
 						<BlockHelper>{t('protocol.delegate.sig.helper')}</BlockHelper>
 						<BlockButton variant="primary">{t('protocol.delegate.sig.button')}</BlockButton>
-					</Block>
+					</Block> */}
 				</StyledCard>
 			</BoxContainer>
 			<Header title={t('protocol.activity.title')} />

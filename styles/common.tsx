@@ -32,7 +32,6 @@ export const GradientCard = styled(FlexDivCol)`
 	background: linear-gradient(180deg, #08021e 0%, #120446 100%);
 	border-radius: 2px;
 	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-	justify-content: center;
 	align-items: center;
 
 	@media only screen and (max-width: 1015px) {
