@@ -58,7 +58,8 @@
 	},
 	"common": {
 		"wallet": {
-			"not-connected": "Connect wallet"
+			"not-connected": "Connect wallet",
+			"disconnect": "Disconnect"
 		}
 	}
 }

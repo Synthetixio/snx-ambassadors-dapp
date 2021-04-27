@@ -1,29 +1,51 @@
 import { FC, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Svg } from 'react-optimized-image';
+import OutsideClickHandler from 'react-outside-click-handler';
+import { useTranslation } from 'react-i18next';
+import { useRecoilValue } from 'recoil';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import AmbassadorLogo from 'assets/svg/ambassador-logo.svg';
 import MenuHamburgerIcon from 'assets/svg/menu-hamburger.svg';
 import MenuCloseIcon from 'assets/svg/menu-close.svg';
+import CaretUp from 'assets/svg/caret-up.svg';
+import CaretDown from 'assets/svg/caret-down.svg';
+import ExitIcon from 'assets/svg/exit.svg';
 
-import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
+import Connector from 'containers/Connector';
+
 import ROUTES from 'constants/routes';
-import { useRouter } from 'next/router';
-import { FlexDivCentered, IconButton, linkCSS, UpperCased } from 'styles/common';
+import { zIndex } from 'constants/ui';
+
+import { isWalletConnectedState, networkState, truncatedWalletAddressState } from 'store/wallet';
+
+import {
+	FlexDivCentered,
+	FlexDivCol,
+	FlexDivColCentered,
+	IconButton,
+	linkCSS,
+	UpperCased,
+} from 'styles/common';
+import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
+
 import Button from 'components/Button';
 import ConnectionDot from 'components/ConnectionDot';
-import { useTranslation } from 'react-i18next';
-import Connector from 'containers/Connector';
-import { useRecoilValue } from 'recoil';
-import { isWalletConnectedState, networkState, truncatedWalletAddressState } from 'store/wallet';
-import Link from 'next/link';
+
+const caretUp = <Svg src={CaretUp} viewBox={`0 0 ${CaretUp.width} ${CaretUp.height}`} />;
+const caretDown = <Svg src={CaretDown} viewBox={`0 0 ${CaretDown.width} ${CaretDown.height}`} />;
+const exitIcon = <Svg src={ExitIcon} />;
 
 const Header: FC = () => {
 	const { t } = useTranslation();
-	const { connectWallet } = Connector.useContainer();
+	const { connectWallet, disconnectWallet } = Connector.useContainer();
 	const router = useRouter();
 
 	const [menuOpen, setMenuOpen] = useState(false);
+
+	const [walletOptionsModalOpened, setWalletOptionsModalOpened] = useState<boolean>(false);
 
 	const truncatedWalletAddress = useRecoilValue(truncatedWalletAddressState);
 	const isWalletConnected = useRecoilValue(isWalletConnectedState);
@@ -61,36 +83,53 @@ const Header: FC = () => {
 								{key}
 							</HeaderLink>
 						))}
-
-						{isWalletConnected ? (
-							<WalletButton
-								variant="solid"
-								onClick={() => {
-									// setWalletOptionsModalOpened(!walletOptionsModalOpened);
-								}}
-								// isActive={walletOptionsModalOpened}
-								data-testid="user-menu"
-							>
-								<FlexDivCentered data-testid="wallet-address">
-									<StyledConnectionDot />
-									{truncatedWalletAddress}
-								</FlexDivCentered>
-								<NetworkTag className="network-tag" data-testid="network-tag">
-									{getNetworkName()}
-								</NetworkTag>
-								{/* {walletOptionsModalOpened ? caretUp : caretDown} */}
-							</WalletButton>
-						) : (
-							<WalletButton variant="solid" onClick={() => connectWallet()}>
-								<FlexDivCentered>
-									<StyledConnectionDot />
-									<UpperCased>{t('common.wallet.not-connected')}</UpperCased>
-								</FlexDivCentered>
-							</WalletButton>
-						)}
-						<MenuToggleButton onClick={toggleMenu}>
-							{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
-						</MenuToggleButton>
+						<DropdownContainer>
+							<OutsideClickHandler onOutsideClick={() => setWalletOptionsModalOpened(false)}>
+								{isWalletConnected ? (
+									<WalletButton
+										variant="solid"
+										onClick={() => {
+											setWalletOptionsModalOpened(!walletOptionsModalOpened);
+										}}
+										isActive={walletOptionsModalOpened}
+										data-testid="user-menu"
+									>
+										<FlexDivCentered data-testid="wallet-address">
+											<StyledConnectionDot />
+											{truncatedWalletAddress}
+										</FlexDivCentered>
+										<NetworkTag className="network-tag" data-testid="network-tag">
+											{getNetworkName()}
+										</NetworkTag>
+										{walletOptionsModalOpened ? caretUp : caretDown}
+									</WalletButton>
+								) : (
+									<WalletButton variant="solid" onClick={() => connectWallet()}>
+										<FlexDivCentered>
+											<StyledConnectionDot />
+											<UpperCased>{t('common.wallet.not-connected')}</UpperCased>
+										</FlexDivCentered>
+									</WalletButton>
+								)}
+								{walletOptionsModalOpened && (
+									<StyledMenuModal>
+										<Buttons>
+											<StyledTextButton
+												onClick={() => {
+													setWalletOptionsModalOpened(false);
+													disconnectWallet();
+												}}
+											>
+												{exitIcon} {t('common.wallet.disconnect')}
+											</StyledTextButton>
+										</Buttons>
+									</StyledMenuModal>
+								)}
+								<MenuToggleButton onClick={toggleMenu}>
+									{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
+								</MenuToggleButton>
+							</OutsideClickHandler>
+						</DropdownContainer>
 					</HeaderSectionRight>
 				</HeaderContainerInner>
 			</HeaderContainer>
@@ -273,4 +312,48 @@ const MenuButton = styled(IconButton)<{ isActive: boolean }>`
 
 const StyledConnectionDot = styled(ConnectionDot)`
 	margin-right: 8px;
+`;
+
+const DropdownContainer = styled.div`
+	width: 185px;
+	height: 32px;
+	position: relative;
+
+	> div {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		z-index: ${zIndex.DROPDOWN};
+		width: inherit;
+	}
+`;
+
+const StyledMenuModal = styled(FlexDivColCentered)`
+	margin-top: 12px;
+	background: ${(props) => props.theme.colors.navy};
+	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
+	border-radius: 4px;
+`;
+
+const StyledTextButton = styled(Button).attrs({
+	variant: 'text',
+	size: 'lg',
+})`
+	font-family: ${(props) => props.theme.fonts.condensedMedium};
+	padding: 0 20px;
+	display: inline-grid;
+	grid-template-columns: auto 1fr;
+	align-items: center;
+	justify-items: center;
+	text-transform: uppercase;
+
+	svg {
+		margin-right: 5px;
+		color: ${(props) => props.theme.colors.gray};
+	}
+`;
+
+const Buttons = styled(FlexDivCol)`
+	margin: 0px 8px;
 `;
