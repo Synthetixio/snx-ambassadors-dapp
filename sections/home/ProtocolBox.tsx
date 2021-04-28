@@ -9,6 +9,8 @@ import Link from 'next/link';
 import ROUTES from 'constants/routes';
 import { Token } from 'constants/protocols';
 import { formatNumber } from 'utils/formatters/number';
+import { isWalletConnectedState } from 'store/wallet';
+import { useRecoilValue } from 'recoil';
 
 interface ProtocolBoxProps {
 	tokenInfo: Token;
@@ -18,10 +20,11 @@ interface ProtocolBoxProps {
 
 const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, delegated }) => {
 	const { t } = useTranslation();
+	const isWalletConnected = useRecoilValue(isWalletConnectedState);
+
 	return (
 		<Container>
 			<LogoWrapper>{tokenInfo.logo}</LogoWrapper>
-
 			<Title>{tokenInfo.name}</Title>
 			<Ticker>{tokenInfo.symbol}</Ticker>
 			<DataRow>
@@ -31,7 +34,7 @@ const ProtocolBox: React.FC<ProtocolBoxProps> = ({ tokenInfo, votingPower, deleg
 				</DataCol>
 				<DataCol rightSide={true}>
 					<p>{t('delegation.box.delegated')}</p>
-					<span>{formatNumber(delegated)}</span>
+					<span>{isWalletConnected ? formatNumber(delegated) : '-'}</span>
 				</DataCol>
 			</DataRow>
 			<Link href={ROUTES.Protocol(tokenInfo.symbol)}>
@@ -55,7 +58,7 @@ const Title = styled.div`
 	line-height: 24px;
 	text-transform: uppercase;
 	text-align: center;
-	margin-top: 16px;
+	margin: 4px;
 
 	@media only screen and (max-width: 500px) {
 		margin-bottom: 25px;
@@ -67,12 +70,13 @@ const Ticker = styled.div`
 	color: ${(props) => props.theme.colors.white};
 	font-size: 12px;
 	text-align: center;
-	margin-bottom: 16px;
+	margin: 4px;
 	opacity: 0.7;
 `;
 
 const DataRow = styled(FlexDivRow)`
 	width: 100%;
+	margin: 8px;
 `;
 
 const DataCol = styled(FlexDivCol)<{ rightSide: boolean }>`
@@ -96,14 +100,14 @@ const DataCol = styled(FlexDivCol)<{ rightSide: boolean }>`
 		font-family: ${(props) => props.theme.fonts.condensedBold};
 		font-size: 14px;
 		color: ${(props) => props.theme.colors.gray};
-		margin: 0;
+		margin: 4px;
 	}
 
 	span {
 		font-family: ${(props) => props.theme.fonts.expanded};
 		font-size: 12px;
 		color: ${(props) => props.theme.colors.white};
-		margin: 0;
+		margin: 4px;
 	}
 `;
 

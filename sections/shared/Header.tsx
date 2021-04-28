@@ -13,6 +13,8 @@ import MenuCloseIcon from 'assets/svg/menu-close.svg';
 import CaretUp from 'assets/svg/caret-up.svg';
 import CaretDown from 'assets/svg/caret-down.svg';
 import ExitIcon from 'assets/svg/exit.svg';
+import WalletIcon from 'assets/svg/wallet.svg';
+import ArrowsChangeIcon from 'assets/svg/arrows-change.svg';
 
 import Connector from 'containers/Connector';
 
@@ -25,9 +27,9 @@ import {
 	FlexDivCentered,
 	FlexDivCol,
 	FlexDivColCentered,
-	IconButton,
 	linkCSS,
 	UpperCased,
+	Divider,
 } from 'styles/common';
 import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
 
@@ -37,10 +39,17 @@ import ConnectionDot from 'components/ConnectionDot';
 const caretUp = <Svg src={CaretUp} viewBox={`0 0 ${CaretUp.width} ${CaretUp.height}`} />;
 const caretDown = <Svg src={CaretDown} viewBox={`0 0 ${CaretDown.width} ${CaretDown.height}`} />;
 const exitIcon = <Svg src={ExitIcon} />;
+const walletIcon = <Svg src={WalletIcon} />;
+const changeIcon = <Svg src={ArrowsChangeIcon} />;
 
 const Header: FC = () => {
 	const { t } = useTranslation();
-	const { connectWallet, disconnectWallet } = Connector.useContainer();
+	const {
+		connectWallet,
+		disconnectWallet,
+		isHardwareWallet,
+		switchAccounts,
+	} = Connector.useContainer();
 	const router = useRouter();
 
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -114,6 +123,27 @@ const Header: FC = () => {
 								{walletOptionsModalOpened && (
 									<StyledMenuModal>
 										<Buttons>
+											<StyledButton
+												onClick={() => {
+													setWalletOptionsModalOpened(false);
+
+													connectWallet();
+												}}
+											>
+												{walletIcon} {t('common.wallet.change-wallet')}
+											</StyledButton>
+											{isHardwareWallet() && (
+												<StyledButton
+													onClick={() => {
+														setWalletOptionsModalOpened(false);
+
+														switchAccounts();
+													}}
+												>
+													{changeIcon} {t('common.wallet.switch-account')}
+												</StyledButton>
+											)}
+											<StyledDivider />
 											<StyledTextButton
 												onClick={() => {
 													setWalletOptionsModalOpened(false);
@@ -125,15 +155,14 @@ const Header: FC = () => {
 										</Buttons>
 									</StyledMenuModal>
 								)}
-								<MenuToggleButton onClick={toggleMenu}>
+								{/* <MenuToggleButton onClick={toggleMenu}>
 									{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
-								</MenuToggleButton>
+								</MenuToggleButton> */}
 							</OutsideClickHandler>
 						</DropdownContainer>
 					</HeaderSectionRight>
 				</HeaderContainerInner>
 			</HeaderContainer>
-			<Divider />
 			{menuOpen ? (
 				<MobileMenu>
 					{Object.entries(NAV_LINKS).map(([key, value]) => (
@@ -158,11 +187,9 @@ export default Header;
 const HeaderContainer = styled.div`
 	height: 75px;
 	padding-top: 35px;
-	position: fixed;
 	font-style: normal;
 	font-weight: bold;
 	width: 100%;
-	margin-left: -20px;
 	z-index: ${Z_INDEX.thousand};
 	background-color: ${(props) => props.theme.colors.black};
 	@media only screen and (max-width: 1266px) {
@@ -239,13 +266,6 @@ const MobileLink = styled.div`
 	text-transform: uppercase;
 `;
 
-const Divider = styled.div`
-	background: ${(props) => props.theme.colors.white};
-	opacity: 0.1;
-	width: 100%;
-	height: 1px;
-`;
-
 const MenuToggleButton = styled.button`
 	background: transparent;
 	border: 0;
@@ -272,13 +292,15 @@ const NetworkTag = styled(FlexDivCentered)`
 	text-transform: uppercase;
 `;
 
-const WalletButton = styled(Button)`
+const WalletButton = styled(Button).attrs({
+	size: 'md',
+})`
+	width: 175px;
 	display: inline-flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
 	background: ${(props) => props.theme.colors.navy};
-	margin-left: 16px;
 
 	svg {
 		margin-left: 5px;
@@ -298,18 +320,6 @@ const WalletButton = styled(Button)`
 	}
 `;
 
-const MenuButton = styled(IconButton)<{ isActive: boolean }>`
-	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
-	color: ${(props) => (props.isActive ? props.theme.colors.white : props.theme.colors.gray)};
-	padding: 7px;
-	border-radius: 4px;
-	background: ${(props) => props.theme.colors.navy};
-	&:hover {
-		color: ${(props) => props.theme.colors.white};
-	}
-	height: 32px;
-`;
-
 const StyledConnectionDot = styled(ConnectionDot)`
 	margin-right: 8px;
 `;
@@ -318,6 +328,7 @@ const DropdownContainer = styled.div`
 	width: 185px;
 	height: 32px;
 	position: relative;
+	margin-left: 24px;
 
 	> div {
 		position: absolute;
@@ -334,11 +345,12 @@ const StyledMenuModal = styled(FlexDivColCentered)`
 	background: ${(props) => props.theme.colors.navy};
 	border: 1px solid ${(props) => props.theme.colors.mediumBlue};
 	border-radius: 4px;
+	width: 175px;
 `;
 
 const StyledTextButton = styled(Button).attrs({
 	variant: 'text',
-	size: 'lg',
+	size: 'md',
 })`
 	font-family: ${(props) => props.theme.fonts.condensedMedium};
 	padding: 0 20px;
@@ -354,6 +366,30 @@ const StyledTextButton = styled(Button).attrs({
 	}
 `;
 
+const StyledButton = styled(Button).attrs({
+	variant: 'outline',
+	size: 'md',
+})`
+	font-family: ${(props) => props.theme.fonts.condensedMedium};
+	padding: 0 20px;
+	display: inline-grid;
+	grid-template-columns: auto 1fr;
+	align-items: center;
+	justify-items: center;
+	text-transform: uppercase;
+
+	margin: 6px 0px;
+
+	svg {
+		margin-right: 5px;
+		color: ${(props) => props.theme.colors.gray};
+	}
+`;
+
 const Buttons = styled(FlexDivCol)`
 	margin: 0px 8px;
+`;
+
+const StyledDivider = styled(Divider)`
+	margin: 8px 0px;
 `;

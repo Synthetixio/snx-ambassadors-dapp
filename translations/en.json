@@ -13,7 +13,7 @@
 	},
 	"members": {
 		"title": "Members",
-		"helper": "The following ambassadors operate out of a Gnosis Multisig found here <0>{{ambassadorMultisig}}</0>",
+		"helper": "The following ambassadors operate out of a Gnosis Multisig with address <0>{{ambassadorMultisig}}</0>",
 		"table": {
 			"name": "name",
 			"address": "address",
@@ -38,7 +38,12 @@
 			"withdraw": {
 				"title": "Withdraw your delegation",
 				"helper": "Withdrawing sets the delegate to your own address",
-				"button": "Withdraw"
+				"button": "Withdraw",
+				"not-connected": {
+					"title": "Wallet not connected",
+					"subtext": "Please connect your wallet to see your delegation status.",
+					"button": "Connect wallet"
+				}
 			},
 			"direct": {
 				"title": "Delegate your vote",
@@ -53,13 +58,44 @@
 			}
 		},
 		"activity": {
-			"title": "Voting Activity"
+			"title": "Voting Activity",
+			"empty": {
+				"title": "No past activity",
+				"subtext": "Reach out to the ambassadors to signal a vote"
+			}
 		}
 	},
 	"common": {
 		"wallet": {
 			"not-connected": "Connect wallet",
-			"disconnect": "Disconnect"
+			"disconnect": "Disconnect",
+			"change-wallet": "change wallet",
+			"switch-account": "switch account"
+		},
+		"not-found": {
+			"title": "Oops, something went wrong",
+			"subtext": "The page you are looking for is not found or cannot reach due to some error. Kindly go back and choose another direction.",
+			"button": "Go home"
+		},
+		"confirm-transaction": {
+			"title": "Confirm Transaction",
+			"delegate": {
+				"delegating": "Delegating for",
+				"contract": "{{protocolTicker}} contract"
+			},
+			"helper": "Follow the Metamask prompts to authorize the transaction"
+		},
+		"confirm-signature": {
+			"title": "Confirm Signature",
+			"delegate": {
+				"delegating": "Delegating via signature vote for",
+				"contract": "{{protocolTicker}} contract"
+			},
+			"helper": "Follow the Metamask prompts to confirm your signature"
+		},
+		"transaction": {
+			"error": "An unexpected error occurred.",
+			"reattempt": "Try again"
 		}
 	}
 }

@@ -12,10 +12,15 @@ import {
 	Divider,
 	FlexDivCentered,
 	FlexDivCol,
+	FlexDivColCentered,
 	FlexDivRow,
 	GradientCard,
 	GridDiv,
 	IconButton,
+	ModalContent,
+	ModalItem,
+	ModalItemText,
+	ModalItemTitle,
 	StyledLink,
 } from 'styles/common';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
@@ -29,6 +34,7 @@ import CrossIcon from 'assets/svg/cross.svg';
 import FailureIcon from 'assets/svg/failure.svg';
 import SuccessIcon from 'assets/svg/success.svg';
 import SpinnerIcon from 'assets/svg/loader.svg';
+import EmptyIcon from 'assets/svg/empty.svg';
 
 import { SupportedProtocol, protocols, protocolsBySymbol } from 'constants/protocols';
 import { formatNumber, formatPercent } from 'utils/formatters/number';
@@ -41,9 +47,9 @@ import { isWalletConnectedState, walletAddressState } from 'store/wallet';
 import { Proposal, useProtocolProposals } from 'queries/useProposals';
 import UNIToken from 'contracts/UNI';
 import AAVEToken from 'contracts/AAVE';
-import { normalizedGasPrice } from 'utils/network';
 import TransactionNotifier from 'containers/TransactionNotifier';
 import Connector from 'containers/Connector';
+import TxConfirmationModal from 'sections/protocol/TxConfirmationModal';
 
 interface ProposalDetail {
 	target: string;
@@ -85,15 +91,18 @@ const Protocol: React.FC = () => {
 	const { ticker } = router.query;
 
 	const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
+	const [copiedMultisigAddress, setCopiedMultisigAddress] = useState<boolean>(false);
+	const [isSignature, setIsSignature] = useState<boolean>(false);
+
 	const walletAddress = useRecoilValue(walletAddressState);
 	const isWalletConnected = useRecoilValue(isWalletConnectedState);
 
 	const { monitorTransaction } = TransactionNotifier.useContainer();
-	const { signer } = Connector.useContainer();
+	const { signer, connectWallet } = Connector.useContainer();
 
 	const [error, setError] = useState<string | null>('');
-
 	const [txHash, setTxHash] = useState<string | null>(null);
+	const [txModalOpen, setTxModalOpen] = useState<boolean>(false);
 
 	const protocolTicker = ticker as SupportedProtocol;
 
@@ -110,7 +119,16 @@ const Protocol: React.FC = () => {
 				setCopiedAddress(false);
 			}, 2000);
 		}
-	}, [copiedAddress]);
+		if (copiedMultisigAddress) {
+			setTimeout(() => {
+				setCopiedAddress(false);
+			}, 2000);
+		}
+	}, [copiedAddress, copiedMultisigAddress]);
+
+	// @TODO:
+
+	const handleDelegateBySig = () => {};
 
 	const handleDelegate = useCallback(async () => {
 		async function delegate() {
@@ -142,16 +160,13 @@ const Protocol: React.FC = () => {
 
 					if (transaction) {
 						setTxHash(transaction.hash);
-						// setTransactionState(Transaction.WAITING);
 						monitorTransaction({
 							txHash: transaction.hash,
-							// onTxConfirmed: () => setTransactionState(Transaction.SUCCESS),
+							onTxConfirmed: () => setTxModalOpen(false),
 						});
-						// setTxModalOpen(false);
 					}
 				} catch (e) {
 					console.log(e);
-					// setTransactionState(Transaction.PRESUBMIT);
 					setError(e.message);
 				}
 			}
@@ -176,27 +191,29 @@ const Protocol: React.FC = () => {
 		const percentage = formatPercent(delegate.delegatedVotes / global.delegatedVotes);
 
 		return (
-			<PieChart width={250} height={250}>
-				<Pie
-					data={data}
-					dataKey="value"
-					nameKey="name"
-					innerRadius={80}
-					outerRadius={100}
-					fill={theme.colors.blue}
-				>
-					{data.map((_, index: number) => (
-						<Cell key={`cell-${index}`} fill={COLORS[index]} stroke="none" />
-					))}
-					<Label
-						value={`${percentage}`}
-						position="center"
-						fontSize={22}
-						fontFamily={theme.fonts.expanded}
-						fill={theme.colors.white}
-					/>
-				</Pie>
-			</PieChart>
+			<ChartContainer>
+				<PieChart width={250} height={250}>
+					<Pie
+						data={data}
+						dataKey="value"
+						nameKey="name"
+						innerRadius={80}
+						outerRadius={100}
+						fill={theme.colors.blue}
+					>
+						{data.map((_, index: number) => (
+							<Cell key={`cell-${index}`} fill={COLORS[index]} stroke="none" />
+						))}
+						<Label
+							value={`${percentage}`}
+							position="center"
+							fontSize={22}
+							fontFamily={theme.fonts.expanded}
+							fill={theme.colors.white}
+						/>
+					</Pie>
+				</PieChart>
+			</ChartContainer>
 		);
 	};
 
@@ -243,170 +260,220 @@ const Protocol: React.FC = () => {
 				);
 			});
 		} else {
-			// @TOOD add empty state here
-			return <p>Empty</p>;
+			return (
+				<EmptyContainer>
+					<Svg src={EmptyIcon} />
+					<p>{t('protocol.activity.empty.title')}</p>
+					<span>{t('protocol.activity.empty.subtext')}</span>
+				</EmptyContainer>
+			);
 		}
 	};
 
 	return (
 		<>
-			<Header
-				title={t('protocol.delegate.title', { ticker: protocolTicker })}
-				first={true}
-				back={true}
-				protocol={
-					protocols.filter((protocol) => protocol.symbol === SupportedProtocol[protocolTicker])[0]
-				}
-			/>
-			<BoxContainer>
-				<StyledCard>
-					{!delegateInfo.isLoading && !globalInfo.isLoading ? (
-						delegateInfo.data && globalInfo.data ? (
-							<>
-								<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
-								{returnPieChart(delegateInfo.data, globalInfo.data)}
-								<MultisigValue>{ambassadorENS}</MultisigValue>
-								<AddressRow>
-									<p>{ambassadorMultisig}</p>
-									<CopyToClipboard text={ambassadorMultisig} onCopy={() => setCopiedAddress(true)}>
-										{copiedAddress ? (
-											<Svg
-												src={CheckIcon}
-												width="16"
-												height="16"
-												viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
-											/>
-										) : (
-											<Svg
-												width="16"
-												height="16"
-												viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
-												src={CopyIcon}
-											/>
-										)}
-									</CopyToClipboard>
-								</AddressRow>
-								<StatsRow>
-									<>
-										<p>
-											{formatNumber(delegateInfo.data.delegatedVotes)}
-											<span>{t('protocol.delegate.stats.votes')}</span>
-										</p>
-									</>
-									<>
-										<p>
-											{formatNumber(delegateInfo.data.tokenHoldersRepresentedAmount)}
-											<span>{t('protocol.delegate.stats.delegators')}</span>
-										</p>
-									</>
-								</StatsRow>
-								<StyledDivider />
-
-								{isWalletConnected && walletAddress && delegateInfo.data ? (
-									<>
-										<AddressRow>
-											<p>{ethers.utils.getAddress(walletAddress)}</p>
-											<CopyToClipboard text={walletAddress} onCopy={() => setCopiedAddress(true)}>
-												{copiedAddress ? (
-													<Svg
-														src={CheckIcon}
-														width="16"
-														height="16"
-														viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
-													/>
-												) : (
-													<Svg
-														width="16"
-														height="16"
-														viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
-														src={CopyIcon}
-													/>
-												)}
-											</CopyToClipboard>
-										</AddressRow>
-										<StatsRow>
-											<p>
-												{t('protocol.delegate.user.available')}:
-												<span>{formatNumber(delegatorInfo.data ?? 0)}</span>
-											</p>
-											<p>
-												{t('protocol.delegate.user.status')}:
-												<span>
-													{delegatorInfo.data === 0
-														? t('protocol.delegate.user.not-delegated')
-														: t('protocol.delegate.user.delegated')}
-												</span>
-											</p>
-										</StatsRow>
-									</>
-								) : (
+			<>
+				<Header
+					title={t('protocol.delegate.title', { ticker: protocolTicker })}
+					first={true}
+					back={true}
+					protocol={
+						protocols.filter((protocol) => protocol.symbol === SupportedProtocol[protocolTicker])[0]
+					}
+				/>
+				<BoxContainer>
+					<StyledCard>
+						{!delegateInfo.isLoading && !globalInfo.isLoading ? (
+							delegateInfo.data && globalInfo.data ? (
+								<>
+									<Subtitle>{t('protocol.delegate.vote-weight')}</Subtitle>
+									{returnPieChart(delegateInfo.data, globalInfo.data)}
+									<MultisigValue>{ambassadorENS}</MultisigValue>
 									<AddressRow>
-										<p>Connect Wallet</p>
+										<p>{ambassadorMultisig}</p>
+										<CopyToClipboard
+											text={ambassadorMultisig}
+											onCopy={() => setCopiedMultisigAddress(true)}
+										>
+											{copiedMultisigAddress ? (
+												<Svg
+													src={CheckIcon}
+													width="16"
+													height="16"
+													viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
+												/>
+											) : (
+												<Svg
+													width="16"
+													height="16"
+													viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
+													src={CopyIcon}
+												/>
+											)}
+										</CopyToClipboard>
 									</AddressRow>
-								)}
-								{delegatorInfo.data !== 0 && (
-									<>
-										<WithdrawRow>
-											<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
-											<WithdrawButton>
-												<Svg src={CrossIcon} />
-												{t('protocol.delegate.withdraw.button')}
-											</WithdrawButton>
-										</WithdrawRow>
-										<RowHelper>{t('protocol.delegate.withdraw.helper')}</RowHelper>
-									</>
-								)}
-							</>
+									<StatsRow>
+										<>
+											<p>
+												{formatNumber(delegateInfo.data.delegatedVotes)}
+												<span>{t('protocol.delegate.stats.votes')}</span>
+											</p>
+										</>
+										<>
+											<p>
+												{formatNumber(delegateInfo.data.tokenHoldersRepresentedAmount)}
+												<span>{t('protocol.delegate.stats.delegators')}</span>
+											</p>
+										</>
+									</StatsRow>
+									<StyledDivider />
+
+									{isWalletConnected && walletAddress ? (
+										<>
+											<AddressRow>
+												<p>Current wallet: {ethers.utils.getAddress(walletAddress)}</p>
+												<CopyToClipboard text={walletAddress} onCopy={() => setCopiedAddress(true)}>
+													{copiedAddress ? (
+														<Svg
+															src={CheckIcon}
+															width="16"
+															height="16"
+															viewBox={`0 0 ${CheckIcon.width} ${CheckIcon.height}`}
+														/>
+													) : (
+														<Svg
+															width="16"
+															height="16"
+															viewBox={`0 0 ${CopyIcon.width} ${CopyIcon.height}`}
+															src={CopyIcon}
+														/>
+													)}
+												</CopyToClipboard>
+											</AddressRow>
+											<StatsRow>
+												<p>
+													{t('protocol.delegate.user.available')}:
+													<span>
+														{formatNumber(delegatorInfo.data ?? 0)} {protocolTicker}
+													</span>
+												</p>
+												<p>
+													{t('protocol.delegate.user.status')}:
+													<span>
+														{delegatorInfo.data === 0
+															? t('protocol.delegate.user.not-delegated')
+															: t('protocol.delegate.user.delegated')}
+													</span>
+												</p>
+											</StatsRow>
+											{delegatorInfo.data !== 0 && (
+												<>
+													<WithdrawRow>
+														<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
+														<WithdrawButton>
+															<Svg src={CrossIcon} />
+															{t('protocol.delegate.withdraw.button')}
+														</WithdrawButton>
+													</WithdrawRow>
+													<RowHelper>{t('protocol.delegate.withdraw.helper')}</RowHelper>
+												</>
+											)}
+										</>
+									) : (
+										<ConnectWalletCol>
+											<ConnectWalletTitle>
+												{t('protocol.delegate.withdraw.not-connected.title')}
+											</ConnectWalletTitle>
+											<ConnectWalletSubtext>
+												{t('protocol.delegate.withdraw.not-connected.subtext')}
+											</ConnectWalletSubtext>
+											<ConnectWalletButton variant="primary" onClick={() => connectWallet()}>
+												{t('protocol.delegate.withdraw.not-connected.button')}
+											</ConnectWalletButton>
+										</ConnectWalletCol>
+									)}
+								</>
+							) : (
+								<StyledSpinner src={SpinnerIcon} />
+							)
 						) : (
 							<StyledSpinner src={SpinnerIcon} />
-						)
-					) : (
-						<StyledSpinner src={SpinnerIcon} />
-					)}
-				</StyledCard>
-				<StyledCard>
-					<Subtitle>{t('protocol.delegate.options')}</Subtitle>
-					<Block>
-						<BlockTitle>{t('protocol.delegate.direct.title')}</BlockTitle>
-						<BlockDescription>
-							<Trans
-								i18nKey="protocol.delegate.direct.description"
-								values={{ ticker }}
-								components={[
-									<StyledLink
-										href={
-											protocolTicker
-												? `https://etherscan.io/address/${protocolObj[protocolTicker].address}#code`
-												: ''
-										}
-									/>,
-								]}
-							/>
-						</BlockDescription>
-						<BlockButton onClick={() => handleDelegate()} variant="primary">
-							{t('protocol.delegate.direct.button')}
-						</BlockButton>
-					</Block>
-					{/* <Block>
-						<BlockTitle>{t('protocol.delegate.sig.title')}</BlockTitle>
-						<BlockDescription>{t('protocol.delegate.sig.description')}</BlockDescription>
-						<BlockHelper>{t('protocol.delegate.sig.helper')}</BlockHelper>
-						<BlockButton variant="primary">{t('protocol.delegate.sig.button')}</BlockButton>
-					</Block> */}
-				</StyledCard>
-			</BoxContainer>
-			<Header title={t('protocol.activity.title')} />
-			<BoxContainer>
-				<ProposalContainer>
-					{!proposals.isLoading ? (
-						proposals.data &&
-						delegateInfo.data &&
-						returnProposals(proposals.data, delegateInfo.data)
-					) : (
-						<StyledSpinner src={SpinnerIcon} />
-					)}
-				</ProposalContainer>
-			</BoxContainer>
+						)}
+					</StyledCard>
+
+					<StyledCard>
+						<Subtitle>{t('protocol.delegate.options')}</Subtitle>
+						<Block>
+							<BlockTitle>{t('protocol.delegate.direct.title')}</BlockTitle>
+							<BlockDescription>
+								<Trans
+									i18nKey="protocol.delegate.direct.description"
+									values={{ ticker }}
+									components={[
+										<StyledLink
+											href={
+												protocolTicker
+													? `https://etherscan.io/address/${protocolObj[protocolTicker].address}#code`
+													: ''
+											}
+										/>,
+									]}
+								/>
+							</BlockDescription>
+							<BlockButton
+								onClick={() => handleDelegate()}
+								variant="primary"
+								disabled={!isWalletConnected}
+							>
+								{t('protocol.delegate.direct.button')}
+							</BlockButton>
+						</Block>
+						<Block>
+							<BlockTitle>{t('protocol.delegate.sig.title')}</BlockTitle>
+							<BlockDescription>{t('protocol.delegate.sig.description')}</BlockDescription>
+							<BlockHelper>{t('protocol.delegate.sig.helper')}</BlockHelper>
+							<BlockButton onClick={() => {}} disabled={true} variant="primary">
+								{t('protocol.delegate.sig.button')}
+							</BlockButton>
+						</Block>
+					</StyledCard>
+				</BoxContainer>
+				<Header title={t('protocol.activity.title')} />
+				<BoxContainer>
+					<ProposalContainer>
+						{!proposals.isLoading ? (
+							proposals.data &&
+							delegateInfo.data &&
+							returnProposals(proposals.data, delegateInfo.data)
+						) : (
+							<StyledSpinner src={SpinnerIcon} />
+						)}
+					</ProposalContainer>
+				</BoxContainer>
+			</>
+			{txModalOpen && (
+				<TxConfirmationModal
+					onDismiss={() => setTxModalOpen(false)}
+					txError={error}
+					attemptRetry={isSignature ? handleDelegateBySig : handleDelegate}
+					content={
+						<ModalContent>
+							<ModalItem>
+								<ModalItemTitle>
+									{isSignature
+										? t('common.confirm-signature.delegate.delegating')
+										: t('common.confirm-transaction.delegate.delegating')}
+								</ModalItemTitle>
+								<ModalItemText>
+									{isSignature
+										? t('common.confirm-signature.delegate.contract', { protocolTicker })
+										: t('common.confirm-transaction.delegate.contract', { protocolTicker })}
+								</ModalItemText>
+							</ModalItem>
+						</ModalContent>
+					}
+				/>
+			)}
 		</>
 	);
 };
@@ -421,6 +488,8 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 `;
 
 const StyledCard = styled(GradientCard)``;
+
+const ChartContainer = styled.div``;
 
 const Subtitle = styled.div`
 	color: ${(props) => props.theme.colors.white};
@@ -470,7 +539,7 @@ const StatsRow = styled(FlexDivRow)`
 	p {
 		font-weight: 700;
 		margin-right: 16px;
-		text-transform: none;
+		text-transform: capitalize;
 	}
 
 	span {
@@ -603,4 +672,47 @@ const StyledSpinner = styled(Svg)`
 
 const StyledDivider = styled(Divider)`
 	margin-bottom: 16px;
+`;
+
+const ConnectWalletCol = styled(FlexDivCol)`
+	width: 100%;
+`;
+
+const ConnectWalletTitle = styled.div`
+	font-family: ${(props) => props.theme.fonts.interBold};
+	font-size: 20px;
+	color: ${(props) => props.theme.colors.white};
+	margin: 4px 0px;
+	text-transform: capitalize;
+`;
+
+const ConnectWalletSubtext = styled.div`
+	font-family: ${(props) => props.theme.fonts.regular};
+	font-size: 14px;
+	color: ${(props) => props.theme.colors.gray};
+	margin: 4px 0px;
+`;
+
+const ConnectWalletButton = styled(Button)`
+	margin: 16px 0px;
+	text-transform: uppercase;
+`;
+
+const EmptyContainer = styled(FlexDivColCentered)`
+	padding: 16px 0px;
+
+	p {
+		font-family: ${(props) => props.theme.fonts.interBold};
+		font-size: 20px;
+		color: ${(props) => props.theme.colors.white};
+		text-transform: capitalize;
+		margin: 4px 0px;
+	}
+
+	span {
+		font-family: ${(props) => props.theme.fonts.regular};
+		font-size: 14px;
+		color: ${(props) => props.theme.colors.gray};
+		margin: 4px 0px;
+	}
 `;

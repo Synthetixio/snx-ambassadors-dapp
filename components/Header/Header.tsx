@@ -35,7 +35,7 @@ export default Header;
 
 const HeaderContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	max-width: ${MAX_PAGE_WIDTH}px;
-	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
+	margin: ${(props) => (props.first ? '60px auto 20px auto' : '40px auto 20px auto')};
 	font-size: 28px;
 	line-height: 120%;
 	font-family: ${(props) => `${props.theme.fonts.expanded}, ${props.theme.fonts.regular}`};
@@ -55,7 +55,7 @@ const LogoWrapper = styled.div`
 		width: 30px;
 		height: auto;
 		border-radius: 50px;
-		margin-right: 8px;
+		margin-right: 16px;
 		margin-top: 4px;
 	}
 `;

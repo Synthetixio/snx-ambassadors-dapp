@@ -7,7 +7,7 @@ import { FlexDivRow, Paragraph, GridDiv, StyledLink, ExternalLink } from 'styles
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
-import ProtocolBox from 'sections/delegate/components/ProtocolBox';
+import ProtocolBox from 'sections/home/ProtocolBox';
 import { protocols } from 'constants/protocols';
 import useProtocolDelegateData from 'hooks/useDelegateInfoForProtocols';
 import useProtocolDelegatorData from 'hooks/useDelegatorInfoForProtocols';
@@ -39,14 +39,14 @@ const HomePage: React.FC = () => {
 				accessor: 'address',
 				Cell: (cellProps: CellProps<any>) => {
 					return (
-						<FlexDivRow>
+						<StyledAddressRow>
 							<StyledParagraph>{ethers.utils.getAddress(cellProps.value)}</StyledParagraph>
 							<StyledExternalIcon
 								href={`https://etherscan.io/address/${ethers.utils.getAddress(cellProps.value)}`}
 							>
 								<Svg src={LinkIcon} />
 							</StyledExternalIcon>
-						</FlexDivRow>
+						</StyledAddressRow>
 					);
 				},
 				sortable: false,
@@ -141,6 +141,9 @@ const StyledParagraph = styled(Paragraph)`
 	text-transform: none;
 `;
 
-const StyledExternalIcon = styled(ExternalLink)`
-	padding-left: 16px;
+const StyledExternalIcon = styled(ExternalLink)``;
+
+const StyledAddressRow = styled(FlexDivRow)`
+	justify-content: space-between;
+	width: 100%;
 `;
