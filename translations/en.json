@@ -1,4 +1,7 @@
 {
+	"home": {
+		"page-title": "Home | Synthetix Ambassadors"
+	},
 	"ambassadors": {
 		"title": "Mission",
 		"description": "The Synthetix Ambassadors program is for synthetix community members to delegate their third-party voting weights to the ambassadors who aim to vote in the best interest of the synthetix ecosystem."
@@ -21,6 +24,7 @@
 		}
 	},
 	"protocol": {
+		"page-title": "Delegate | Synthetix Ambassadors",
 		"delegate": {
 			"title": "Delegate {{ticker}}",
 			"vote-weight": "Total voting weight",
@@ -73,14 +77,19 @@
 			"switch-account": "switch account"
 		},
 		"not-found": {
+			"page-title": "Not Found | Synthetix Ambassadors",
 			"title": "Oops, something went wrong",
-			"subtext": "The page you are looking for is not found or cannot reach due to some error. Kindly go back and choose another direction.",
+			"subtitle": "The page you are looking for is not found or cannot reach due to some error. Kindly go back and choose another direction.",
 			"button": "Go home"
 		},
 		"confirm-transaction": {
 			"title": "Confirm Transaction",
 			"delegate": {
 				"delegating": "Delegating for",
+				"contract": "{{protocolTicker}} contract"
+			},
+			"withdraw": {
+				"withdrawing": "Withdrawing delegation for",
 				"contract": "{{protocolTicker}} contract"
 			},
 			"helper": "Follow the Metamask prompts to authorize the transaction"

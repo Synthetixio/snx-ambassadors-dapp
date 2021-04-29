@@ -3,6 +3,7 @@ import onboard from 'bnc-onboard';
 import { Subscriptions } from 'bnc-onboard/dist/src/interfaces';
 import { getInfuraRpcURL } from 'utils/infura';
 
+import notify, { InitOptions } from 'bnc-notify';
 import { Network } from 'store/wallet';
 
 export const initOnboard = (network: Network, subscriptions: Subscriptions) => {
@@ -58,3 +59,10 @@ export const initOnboard = (network: Network, subscriptions: Subscriptions) => {
 		],
 	});
 };
+
+export const initNotify = (options: InitOptions) =>
+	notify({
+		darkMode: true,
+		desktopPosition: 'bottomRight',
+		...options,
+	});

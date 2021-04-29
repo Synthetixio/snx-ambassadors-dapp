@@ -28,6 +28,11 @@ const Section = styled.section`
 	min-height: 90vh;
 	padding-top: 20px;
 	padding-bottom: 80px;
+
+	@media only screen and (max-width: 1266px) {
+		width: 100%;
+		padding: 0px 16px;
+	}
 `;
 
 const GlobalStyle = createGlobalStyle`

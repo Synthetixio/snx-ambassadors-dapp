@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import AmbassadorLogo from 'assets/svg/ambassador-logo.svg';
+import SNXLogo from 'assets/svg/snx-logo.svg';
 import MenuHamburgerIcon from 'assets/svg/menu-hamburger.svg';
 import MenuCloseIcon from 'assets/svg/menu-close.svg';
 import CaretUp from 'assets/svg/caret-up.svg';
@@ -30,11 +31,13 @@ import {
 	linkCSS,
 	UpperCased,
 	Divider,
+	FlexDivRow,
 } from 'styles/common';
 import { MAX_PAGE_WIDTH, Z_INDEX } from 'styles/constants';
 
 import Button from 'components/Button';
 import ConnectionDot from 'components/ConnectionDot';
+import { DesktopOnlyView, MobileOrTabletView } from 'components/Media';
 
 const caretUp = <Svg src={CaretUp} viewBox={`0 0 ${CaretUp.width} ${CaretUp.height}`} />;
 const caretDown = <Svg src={CaretDown} viewBox={`0 0 ${CaretDown.width} ${CaretDown.height}`} />;
@@ -81,7 +84,12 @@ const Header: FC = () => {
 						<StatsLogoWrap>
 							<Link href="/">
 								<StyledLink>
-									<Svg src={AmbassadorLogo} />
+									<MobileOrTabletView>
+										<LogoWrapper src={SNXLogo} />
+									</MobileOrTabletView>
+									<DesktopOnlyView>
+										<Svg src={AmbassadorLogo} />
+									</DesktopOnlyView>
 								</StyledLink>
 							</Link>
 						</StatsLogoWrap>
@@ -155,11 +163,11 @@ const Header: FC = () => {
 										</Buttons>
 									</StyledMenuModal>
 								)}
-								{/* <MenuToggleButton onClick={toggleMenu}>
-									{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
-								</MenuToggleButton> */}
 							</OutsideClickHandler>
 						</DropdownContainer>
+						<MenuToggleButton onClick={toggleMenu}>
+							{menuOpen ? <Svg src={MenuCloseIcon} /> : <Svg src={MenuHamburgerIcon} />}
+						</MenuToggleButton>
 					</HeaderSectionRight>
 				</HeaderContainerInner>
 			</HeaderContainer>
@@ -184,7 +192,7 @@ const Header: FC = () => {
 
 export default Header;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled(FlexDivRow)`
 	height: 75px;
 	padding-top: 35px;
 	font-style: normal;
@@ -192,40 +200,45 @@ const HeaderContainer = styled.div`
 	width: 100%;
 	z-index: ${Z_INDEX.thousand};
 	background-color: ${(props) => props.theme.colors.black};
+	align-items: center;
+
 	@media only screen and (max-width: 1266px) {
-		margin-left: 0;
+		width: 100%;
+		justify-content: space-between;
 	}
 `;
 
 const HeaderContainerInner = styled.div`
 	max-width: ${MAX_PAGE_WIDTH}px;
+	width: 100%;
+
 	margin: 0 auto;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
 	@media only screen and (max-width: 1266px) {
-		max-width: calc(100% - 40px);
-		margin: 0;
+		width: 100%;
+		margin: 0px 24px;
 	}
 `;
 
-const StatsLogoWrap = styled.div`
-	margin-top: -4px;
-`;
+const StatsLogoWrap = styled.div``;
 
 const HeaderSectionLeft = styled.div`
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 `;
 
 const HeaderSectionRight = styled.div`
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	align-items: center;
 	font-family: ${(props) => `${props.theme.fonts.condensedBold}, ${props.theme.fonts.regular}`};
 	font-size: 12px;
 	color: ${(props) => props.theme.colors.white};
+	width: 100%;
 `;
 
 const StyledLink = styled.div`
@@ -255,6 +268,8 @@ const MobileMenu = styled.div`
 	line-height: 120%;
 	font-family: ${(props) => `${props.theme.fonts.expanded}, ${props.theme.fonts.regular}`};
 	color: ${(props) => props.theme.colors.white};
+	padding-top: 24px;
+
 	@media only screen and (min-width: 800px) {
 		display: none;
 	}
@@ -269,7 +284,7 @@ const MobileLink = styled.div`
 const MenuToggleButton = styled.button`
 	background: transparent;
 	border: 0;
-	margin: -5px 10px 0 0;
+	margin: 0px 0 0 0;
 	padding: 0;
 	cursor: pointer;
 	width: 16px;
@@ -392,4 +407,9 @@ const Buttons = styled(FlexDivCol)`
 
 const StyledDivider = styled(Divider)`
 	margin: 8px 0px;
+`;
+
+const LogoWrapper = styled(Svg)`
+	transform: scale(0.5);
+	margin-top: 8px;
 `;

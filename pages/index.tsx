@@ -60,10 +60,10 @@ const HomePage: React.FC = () => {
 	return (
 		<>
 			<Head>
-				<title>Ambassadors</title>
+				<title>{t('home.page-title')}</title>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<>
+			<Page>
 				<Header title={t('ambassadors.title')} first />
 				<BoxContainer>
 					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
@@ -102,18 +102,26 @@ const HomePage: React.FC = () => {
 						showPagination={false}
 					/>
 				</BoxContainer>
-			</>
+			</Page>
 		</>
 	);
 };
 
 export default HomePage;
 
+const Page = styled.div`
+	padding-bottom: 24px;
+`;
+
 const StyledGrid = styled(GridDiv)`
 	max-width: ${MAX_PAGE_WIDTH}px;
 	margin: 0 auto;
 	column-gap: 16px;
 	grid-template-columns: auto auto auto;
+
+	@media only screen and (max-width: 1266px) {
+		grid-template-columns: auto;
+	}
 `;
 
 const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`

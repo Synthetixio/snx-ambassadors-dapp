@@ -12,24 +12,6 @@ export default {
 	yellow: '#FFD75C',
 	red: '#FF1E39',
 
-	// accent
-	foamGreen: '#00FFF0',
-	burntOrange: '#FF4D00',
-	forestGreen: '#11FF70',
-
-	// muted
-	mutedOrange: '#61383A',
-	mutedBlue: '#055F88',
-	mutedGreen: '#3D6F57',
-	mutedPink: '#59145A',
-	mutedYellow: '#554A3A',
-	mutedPurple: '#3A09A2',
-	mutedGray: '#535353',
-	mutedRed: '#5F3147',
-	mutedFoamGreen: '#058088',
-	mutedBurntOrange: '#883405',
-	mutedForestGreen: '#306332',
-
 	// ui
 	black: '#06061B',
 	blackHover: '#070725',
@@ -53,13 +35,6 @@ export default {
 
 	// background
 	backgroundBlue: 'rgba(9, 9, 47, 0.8)',
-
-	// gradients
-	rainbowGradient: 'linear-gradient(-88.63deg, #00d1ff -14.83%, #ed1eff 108.22%)',
-	darkGradient1: 'linear-gradient(180deg, #08021E 0%, #120446 146.21%)',
-	darkGradient1Flipped: 'linear-gradient(0, #08021E 0%, #120446 146.21%)',
-	darkGradient2: 'linear-gradient(180deg, #08021E 0%, #1F0777 146.21%)',
-	darkGradient2Flipped: 'linear-gradient(0, #08021E 0%, #1F0777 146.21%)',
 
 	// network colors
 	mainnet: '#29B6AF',

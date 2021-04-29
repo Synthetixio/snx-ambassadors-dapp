@@ -19,9 +19,7 @@ import 'tippy.js/dist/tippy.css';
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			retry: 0, // on failure, do not repeat the request
-			refetchOnWindowFocus: false,
-			refetchOnReconnect: false,
+			retry: 15000,
 		},
 	},
 });

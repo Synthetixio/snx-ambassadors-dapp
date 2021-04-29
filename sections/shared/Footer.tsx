@@ -13,20 +13,22 @@ import Twitter from 'assets/svg/twitter.svg';
 const FooterComponent: React.FC = () => {
 	return (
 		<Footer>
-			<FooterLeft>
-				<Svg src={SNXLogo} height={50} />
-			</FooterLeft>
-			<FooterRight>
-				<StyledLink href={''}>
-					<Svg src={Discord} />
-				</StyledLink>
-				<StyledLink href={''}>
-					<Svg src={Twitter} />
-				</StyledLink>
-				<StyledLink href={''}>
-					<Svg src={Github} />
-				</StyledLink>
-			</FooterRight>
+			<FooterInner>
+				<FooterLeft>
+					<Svg src={SNXLogo} />
+				</FooterLeft>
+				<FooterRight>
+					<StyledLink href={''}>
+						<Svg src={Discord} />
+					</StyledLink>
+					<StyledLink href={''}>
+						<Svg src={Twitter} />
+					</StyledLink>
+					<StyledLink href={''}>
+						<Svg src={Github} />
+					</StyledLink>
+				</FooterRight>
+			</FooterInner>
 		</Footer>
 	);
 };
@@ -41,12 +43,30 @@ const Footer = styled.footer`
 	padding: 25px 0px;
 
 	@media only screen and (max-width: 1266px) {
-		max-width: calc(100% - 40px);
-		margin: 0;
+		width: 100%;
+		justify-content: space-between;
 	}
 `;
 
-const FooterLeft = styled(FlexDivCentered)``;
+const FooterInner = styled.div`
+	max-width: ${MAX_PAGE_WIDTH}px;
+	width: 100%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	@media only screen and (max-width: 1266px) {
+		width: 100%;
+		margin: 0px 24px;
+	}
+`;
+
+const FooterLeft = styled(FlexDivCentered)`
+	svg {
+		transform: scale(0.5);
+	}
+`;
 
 const FooterRight = styled(FlexDivCentered)`
 	svg {

@@ -1,5 +1,4 @@
 import { NetworkId, Network as NetworkName } from '@synthetixio/contracts-interface';
-import { GasSpeed } from 'queries/network/useEthGasPriceQuery';
 import { atom, selector } from 'recoil';
 
 import { truncateAddress } from 'utils/formatters/string';
@@ -53,11 +52,6 @@ export const truncatedWalletAddressState = selector<string | null>({
 		}
 		return walletAddress;
 	},
-});
-
-export const gasSpeedState = atom<GasSpeed>({
-	key: getWalletKey('gasSpeed'),
-	default: 'fast',
 });
 
 export const customGasPriceState = atom<string>({

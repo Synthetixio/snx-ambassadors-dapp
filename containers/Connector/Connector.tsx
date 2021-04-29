@@ -3,10 +3,6 @@ import { createContainer } from 'unstated-next';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { NetworkId } from '@synthetixio/contracts-interface';
 import { loadProvider } from '@synthetixio/providers';
-import {
-	TransactionNotifier,
-	TransactionNotifierInterface,
-} from '@synthetixio/transaction-notifier';
 import { ethers } from 'ethers';
 
 import synthetix from 'lib/synthetix';
@@ -25,7 +21,7 @@ import { Wallet as OnboardWallet } from 'bnc-onboard/dist/src/interfaces';
 
 import useLocalStorage from 'hooks/useLocalStorage';
 
-import { initOnboard } from './config';
+import { initOnboard, initNotify } from './config';
 import { LOCAL_STORAGE_KEYS } from 'constants/storage';
 
 const useConnector = () => {
@@ -33,10 +29,7 @@ const useConnector = () => {
 	const [provider, setProvider] = useState<ethers.providers.Provider | null>(null);
 	const [signer, setSigner] = useState<ethers.Signer | null>(null);
 	const [onboard, setOnboard] = useState<ReturnType<typeof initOnboard> | null>(null);
-	const [
-		transactionNotifier,
-		setTransactionNotifier,
-	] = useState<TransactionNotifierInterface | null>(null);
+	const [notify, setNotify] = useState<ReturnType<typeof initNotify> | null>(null);
 	const [isAppReady, setAppReady] = useRecoilState(appReadyState);
 	const [walletAddress, setWalletAddress] = useRecoilState(walletAddressState);
 	const [walletWatched, setWalletWatched] = useRecoilState(walletWatchedState);
@@ -94,11 +87,8 @@ const useConnector = () => {
 							signer,
 						});
 
-						if (transactionNotifier) {
-							transactionNotifier.setProvider(provider);
-						} else {
-							setTransactionNotifier(new TransactionNotifier(provider));
-						}
+						onboard.config({ networkId });
+						notify.config({ networkId });
 
 						setSigner(signer);
 					} else {
@@ -114,7 +104,6 @@ const useConnector = () => {
 						});
 					}
 
-					onboard.config({ networkId });
 					setProvider(provider);
 					setNetwork(
 						synthetix.js
@@ -146,7 +135,6 @@ const useConnector = () => {
 								: null
 						);
 						setSelectedWallet(wallet.name);
-						setTransactionNotifier(new TransactionNotifier(provider));
 					} else {
 						// TODO: setting provider to null might cause issues, perhaps use a default provider?
 						// setProvider(null);
@@ -156,7 +144,12 @@ const useConnector = () => {
 					}
 				},
 			});
-
+			const notify = initNotify({
+				clientLocale: 'en',
+				networkId: 1,
+				dappId: process.env.NEXT_PUBLIC_BN_NOTIFY_API_KEY!,
+			});
+			setNotify(notify);
 			setOnboard(onboard);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -165,6 +158,14 @@ const useConnector = () => {
 	useEffect(() => {
 		setWalletAddress(walletWatched);
 	}, [walletWatched, setWalletAddress]);
+
+	useEffect(() => {
+		if (notify) {
+			notify.config({
+				clientLocale: 'en',
+			});
+		}
+	}, [notify]);
 
 	// load previously saved wallet
 	useEffect(() => {
@@ -232,12 +233,12 @@ const useConnector = () => {
 		provider,
 		signer,
 		onboard,
+		notify,
 		connectWallet,
 		disconnectWallet,
 		switchAccounts,
 		isHardwareWallet,
 		selectedWallet,
-		transactionNotifier,
 	};
 };
 

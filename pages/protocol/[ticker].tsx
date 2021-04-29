@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import styled, { useTheme } from 'styled-components';
 import { Svg } from 'react-optimized-image';
@@ -47,16 +47,16 @@ import { isWalletConnectedState, walletAddressState } from 'store/wallet';
 import { Proposal, useProtocolProposals } from 'queries/useProposals';
 import UNIToken from 'contracts/UNI';
 import AAVEToken from 'contracts/AAVE';
-import TransactionNotifier from 'containers/TransactionNotifier';
 import Connector from 'containers/Connector';
 import TxConfirmationModal from 'sections/protocol/TxConfirmationModal';
+import Head from 'next/head';
+import Notify from 'containers/Notify';
 
 interface ProposalDetail {
 	target: string;
 	functionSig: string;
 	callData: string;
 }
-
 export interface ProposalData {
 	id: string;
 	title: string;
@@ -84,6 +84,12 @@ export interface ProposalData {
 	}[];
 }
 
+enum TransactionType {
+	DELEGATE = 'delegate',
+	BYSIG = 'delegateBySig',
+	WITHDRAW = 'withdraw',
+}
+
 const Protocol: React.FC = () => {
 	const { t } = useTranslation();
 	const router = useRouter();
@@ -92,16 +98,17 @@ const Protocol: React.FC = () => {
 
 	const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
 	const [copiedMultisigAddress, setCopiedMultisigAddress] = useState<boolean>(false);
-	const [isSignature, setIsSignature] = useState<boolean>(false);
 
 	const walletAddress = useRecoilValue(walletAddressState);
 	const isWalletConnected = useRecoilValue(isWalletConnectedState);
 
-	const { monitorTransaction } = TransactionNotifier.useContainer();
+	const { monitorHash } = Notify.useContainer();
+
 	const { signer, connectWallet } = Connector.useContainer();
 
+	const [transactionType, setTransactionType] = useState<TransactionType | null>(null);
 	const [error, setError] = useState<string | null>('');
-	const [txHash, setTxHash] = useState<string | null>(null);
+	const [_, setTxHash] = useState<string | null>(null);
 	const [txModalOpen, setTxModalOpen] = useState<boolean>(false);
 
 	const protocolTicker = ticker as SupportedProtocol;
@@ -127,14 +134,65 @@ const Protocol: React.FC = () => {
 	}, [copiedAddress, copiedMultisigAddress]);
 
 	// @TODO:
-
 	const handleDelegateBySig = () => {};
+
+	const handleWithdraw = useCallback(async () => {
+		async function withdraw() {
+			if (signer && walletAddress) {
+				try {
+					setError(null);
+					setTransactionType(TransactionType.WITHDRAW);
+					setTxModalOpen(true);
+
+					let contract: ethers.Contract;
+
+					if (protocolTicker === SupportedProtocol.AAVE) {
+						contract = new ethers.Contract(
+							protocolObj[protocolTicker].address,
+							AAVEToken.abi,
+							signer
+						);
+					} else {
+						contract = new ethers.Contract(
+							protocolObj[protocolTicker].address,
+							UNIToken.abi,
+							signer
+						);
+					}
+
+					const gasLimit = await contract.estimateGas.delegate(walletAddress);
+
+					let transaction = await contract.delegate(walletAddress, {
+						gasLimit,
+					});
+
+					if (transaction) {
+						setTxHash(transaction.hash);
+						monitorHash({
+							txHash: transaction.hash,
+							onTxConfirmed: () => {
+								delegatorInfo.refetch();
+								setTransactionType(null);
+							},
+						});
+						setTxModalOpen(false);
+					}
+				} catch (e) {
+					console.log(e);
+					setError(e.message);
+				}
+			}
+		}
+		withdraw();
+	}, [signer, walletAddress, monitorHash, protocolObj, protocolTicker, delegatorInfo]);
 
 	const handleDelegate = useCallback(async () => {
 		async function delegate() {
 			if (signer) {
 				try {
 					setError(null);
+					setTransactionType(TransactionType.DELEGATE);
+					setTxModalOpen(true);
 
 					let contract: ethers.Contract;
 
@@ -160,10 +218,14 @@ const Protocol: React.FC = () => {
 
 					if (transaction) {
 						setTxHash(transaction.hash);
-						monitorTransaction({
+						monitorHash({
 							txHash: transaction.hash,
-							onTxConfirmed: () => setTxModalOpen(false),
+							onTxConfirmed: () => {
+								delegatorInfo.refetch();
+								setTransactionType(null);
+							},
 						});
+						setTxModalOpen(false);
 					}
 				} catch (e) {
 					console.log(e);
@@ -172,7 +234,7 @@ const Protocol: React.FC = () => {
 			}
 		}
 		delegate();
-	}, [monitorTransaction, protocolObj, protocolTicker]);
+	}, [monitorHash, protocolObj, protocolTicker, signer, delegatorInfo]);
 
 	const returnPieChart = (delegate: DelegateInfo, global: GlobalData) => {
 		const COLORS = [theme.colors.blueHover, 'rgba(255, 255, 255, 0.24)'];
@@ -270,8 +332,53 @@ const Protocol: React.FC = () => {
 		}
 	};
 
+	const returnModalContent = useMemo(() => {
+		let titleContent;
+		let itemContent;
+
+		switch (transactionType) {
+			case TransactionType.DELEGATE:
+				titleContent = t('common.confirm-transaction.delegate.delegating');
+				itemContent = t('common.confirm-transaction.delegate.contract', { protocolTicker });
+				break;
+			case TransactionType.BYSIG:
+				titleContent = t('common.confirm-signature.delegate.delegating');
+				itemContent = t('common.confirm-signature.delegate.contract', { protocolTicker });
+				break;
+			case TransactionType.WITHDRAW:
+				titleContent = t('common.confirm-transaction.withdraw.withdrawing');
+				itemContent = t('common.confirm-transaction.withdraw.contract', { protocolTicker });
+				break;
+		}
+		return (
+			<ModalContent>
+				<ModalItem>
+					<ModalItemTitle>{titleContent}</ModalItemTitle>
+					<ModalItemText>{itemContent}</ModalItemText>
+				</ModalItem>
+			</ModalContent>
+		);
+	}, [transactionType, protocolTicker, t]);
+
+	const handleRetries = () => {
+		switch (transactionType) {
+			case TransactionType.DELEGATE:
+				handleDelegate();
+				break;
+			case TransactionType.BYSIG:
+				handleDelegateBySig();
+				break;
+			case TransactionType.WITHDRAW:
+				handleWithdraw();
+				break;
+		}
+	};
+
 	return (
 		<>
+			<Head>
+				<title>{t('protocol.page-title')}</title>
+			</Head>
 			<>
 				<Header
 					title={t('protocol.delegate.title', { ticker: protocolTicker })}
@@ -370,7 +477,7 @@ const Protocol: React.FC = () => {
 												<>
 													<WithdrawRow>
 														<WithdrawText>{t('protocol.delegate.withdraw.title')}</WithdrawText>
-														<WithdrawButton>
+														<WithdrawButton onClick={() => handleWithdraw()}>
 															<Svg src={CrossIcon} />
 															{t('protocol.delegate.withdraw.button')}
 														</WithdrawButton>
@@ -423,7 +530,7 @@ const Protocol: React.FC = () => {
 							<BlockButton
 								onClick={() => handleDelegate()}
 								variant="primary"
-								disabled={!isWalletConnected}
+								disabled={!isWalletConnected || delegatorInfo?.data !== 0}
 							>
 								{t('protocol.delegate.direct.button')}
 							</BlockButton>
@@ -455,23 +562,8 @@ const Protocol: React.FC = () => {
 				<TxConfirmationModal
 					onDismiss={() => setTxModalOpen(false)}
 					txError={error}
-					attemptRetry={isSignature ? handleDelegateBySig : handleDelegate}
-					content={
-						<ModalContent>
-							<ModalItem>
-								<ModalItemTitle>
-									{isSignature
-										? t('common.confirm-signature.delegate.delegating')
-										: t('common.confirm-transaction.delegate.delegating')}
-								</ModalItemTitle>
-								<ModalItemText>
-									{isSignature
-										? t('common.confirm-signature.delegate.contract', { protocolTicker })
-										: t('common.confirm-transaction.delegate.contract', { protocolTicker })}
-								</ModalItemText>
-							</ModalItem>
-						</ModalContent>
-					}
+					attemptRetry={handleRetries}
+					content={returnModalContent}
 				/>
 			)}
 		</>
@@ -485,9 +577,18 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
 	grid-template-columns: 50% 50%;
 	grid-column-gap: 20px;
+
+	@media only screen and (max-width: 1266px) {
+		grid-template-columns: auto;
+	}
 `;
 
-const StyledCard = styled(GradientCard)``;
+const StyledCard = styled(GradientCard)`
+	@media only screen and (max-width: 1266px) {
+		width: 100%;
+		padding: 12px;
+	}
+`;
 
 const ChartContainer = styled.div``;
 
@@ -619,6 +720,11 @@ const RowHelper = styled.div`
 
 const ProposalContainer = styled(GradientCard)`
 	grid-column: 1 / 3;
+	@media only screen and (max-width: 1266px) {
+		padding: 16px;
+		width: 100%;
+		overflow: auto;
+	}
 `;
 
 const ProposalRow = styled(FlexDivRow)`
@@ -630,6 +736,11 @@ const ProposalRow = styled(FlexDivRow)`
 	padding-bottom: 16px;
 	padding-top: 16px;
 	border-bottom: 1px solid ${(props) => props.theme.colors.gray};
+
+	@media only screen and (max-width: 1266px) {
+		white-space: nowrap;
+		overflow: scroll;
+	}
 `;
 
 const StatusLabel = styled.div<{ status: string }>`
