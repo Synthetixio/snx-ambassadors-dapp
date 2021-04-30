@@ -51,7 +51,7 @@
 			},
 			"direct": {
 				"title": "Delegate your vote",
-				"description": "Delegate your voting power to the Synthetix Ambassadors. By clicking the button below, you will be calling the delegate() function on the {{ticker}} contract found <0>here</0>. This will delegate your UNI to the Synthetix Ambassadors's multisig address.",
+				"description": "Delegate your voting power to the Synthetix Ambassadors. By clicking the button below, you will be calling the delegate() function on the {{ticker}} contract found <0>here</0>. This will delegate your {{ticker}} to the Synthetix Ambassadors's multisig address.",
 				"button": "Delegate directly"
 			},
 			"sig": {
