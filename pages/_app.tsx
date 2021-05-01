@@ -97,13 +97,11 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 					property="og:description"
 					content="Delegate third party voting weight to Synthetix Ambassadors"
 				/>
-				{/* @TODO add this file in */}
-				{/* <meta property="og:image" content="/static/images/ambassador-social.jpeg" /> */}
+				<meta property="og:image" content="/static/images/ambassador-social.jpeg" />
 				<meta property="og:image:alt" content="Synthetix Ambassadors" />
 				<meta property="og:site_name" content="Synthetix Ambassadors" />
 				{/* twitter */}
-				{/* @TODO add this file in */}
-				{/* <meta name="twitter:image" content="/static/images/ambassador-social.jpeg" /> */}
+				<meta name="twitter:image" content="/static/images/ambassador-social.jpeg" />
 				<meta name="twitter:url" content="https://ambassadors.synthetix.io" />
 				<link rel="icon" href="/images/favicon.png" />
 				<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter" />
