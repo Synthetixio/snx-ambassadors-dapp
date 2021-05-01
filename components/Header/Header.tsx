@@ -42,10 +42,8 @@ const HeaderContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	color: ${(props) => props.theme.colors.white};
 	text-transform: uppercase;
 	justify-content: flex-start;
+	padding: 0px 16px;
 	align-items: center;
-	@media only screen and (max-width: 1266px) {
-		padding: 0px 16px;
-	}
 `;
 
 const BackIcon = styled.div`

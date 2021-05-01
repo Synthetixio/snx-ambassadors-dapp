@@ -201,8 +201,9 @@ const HeaderContainer = styled(FlexDivRow)`
 	z-index: ${Z_INDEX.thousand};
 	background-color: ${(props) => props.theme.colors.black};
 	align-items: center;
+	justify-content: center;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 		justify-content: space-between;
 	}
@@ -216,10 +217,10 @@ const HeaderContainerInner = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin: 0px 24px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
-		margin: 0px 24px;
 	}
 `;
 

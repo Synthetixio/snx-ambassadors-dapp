@@ -29,7 +29,7 @@ const Section = styled.section`
 	padding-top: 20px;
 	padding-bottom: 80px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 	}
 `;

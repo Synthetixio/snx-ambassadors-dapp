@@ -133,27 +133,23 @@ const StyledGrid = styled(GridDiv)`
 	margin: 0 auto;
 	column-gap: 16px;
 	grid-template-columns: auto auto auto;
+	padding: 0px 16px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		grid-template-columns: auto;
-		padding: 0px 16px;
 	}
 `;
 
 const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	max-width: ${MAX_PAGE_WIDTH}px;
 	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
-	@media only screen and (max-width: 1266px) {
-		padding: 0px 16px;
-	}
+	padding: 0px 16px;
 `;
 
 const HeroContainer = styled(FlexDivCol)`
 	max-width: ${MAX_PAGE_WIDTH}px;
 	margin: 120px auto 20px auto;
-	@media only screen and (max-width: 1266px) {
-		padding: 0px 16px;
-	}
+	padding: 0px 16px;
 `;
 
 const Hero = styled.div`
@@ -163,7 +159,7 @@ const Hero = styled.div`
 	text-transform: uppercase;
 	margin-bottom: 16px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		font-size: 32px;
 	}
 `;
@@ -176,8 +172,8 @@ const SvgContainer = styled(FlexDivCentered)`
 `;
 
 const HeroSvg = styled(Svg)`
-	@media only screen and (min-width: 1266px) {
-		transform: scaleX(1.75);
+	@media only screen and (min-width: 1440px) {
+		display: none;
 	}
 `;
 

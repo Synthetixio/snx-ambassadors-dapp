@@ -578,7 +578,7 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 	grid-template-columns: 50% 50%;
 	grid-column-gap: 20px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		grid-template-columns: auto;
 		padding: 0px 16px;
 	}
@@ -586,7 +586,7 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 `;
 
 const StyledCard = styled(GradientCard)`
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 		padding: 12px;
 	}
@@ -722,7 +722,7 @@ const RowHelper = styled.div`
 
 const ProposalContainer = styled(GradientCard)`
 	grid-column: 1 / 3;
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		padding: 16px;
 		width: 100%;
 		overflow: auto;
@@ -739,7 +739,7 @@ const ProposalRow = styled(FlexDivRow)`
 	padding-top: 16px;
 	border-bottom: 1px solid ${(props) => props.theme.colors.gray};
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		white-space: nowrap;
 		overflow: scroll;
 	}

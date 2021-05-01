@@ -42,7 +42,7 @@ const Footer = styled.footer`
 	position: relative;
 	padding: 25px 0px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 		justify-content: space-between;
 	}
@@ -56,7 +56,7 @@ const FooterInner = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 		margin: 0px 24px;
 	}

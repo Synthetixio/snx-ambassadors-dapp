@@ -34,7 +34,7 @@ const Container = styled.div`
 	text-align: center;
 	margin-top: -32px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 	}
 `;
@@ -53,7 +53,7 @@ const Subtitle = styled.h2`
 	width: 500px;
 	line-height: 25px;
 
-	@media only screen and (max-width: 1266px) {
+	@media only screen and (max-width: 1020px) {
 		width: 100%;
 		margin: 0px;
 	}
