@@ -177,7 +177,7 @@ const SvgContainer = styled(FlexDivCentered)`
 
 const HeroSvg = styled(Svg)`
 	@media only screen and (min-width: 1266px) {
-		transform: scaleX(1.5);
+		transform: scaleX(1.75);
 	}
 `;
 
