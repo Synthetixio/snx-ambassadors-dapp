@@ -31,7 +31,6 @@ const Section = styled.section`
 
 	@media only screen and (max-width: 1266px) {
 		width: 100%;
-		padding: 0px 16px;
 	}
 `;
 

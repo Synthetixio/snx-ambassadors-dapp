@@ -90,7 +90,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 				<meta name="twitter:site" content="@synthetix_io" />
 				<meta name="twitter:creator" content="@synthetix_io" />
 				{/* open graph */}
-				<meta property="og:url" content="https://ambassadors.synthetix.io/" />
+				<meta property="og:url" content="https://ambassador.synthetix.io/" />
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Synthetix Ambassadors" />
 				<meta
@@ -102,7 +102,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 				<meta property="og:site_name" content="Synthetix Ambassadors" />
 				{/* twitter */}
 				<meta name="twitter:image" content="/static/images/ambassador-social.jpeg" />
-				<meta name="twitter:url" content="https://ambassadors.synthetix.io" />
+				<meta name="twitter:url" content="https://ambassador.synthetix.io/" />
 				<link rel="icon" href="/images/favicon.png" />
 				<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter" />
 			</Head>

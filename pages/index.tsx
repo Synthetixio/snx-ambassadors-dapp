@@ -3,7 +3,15 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import Header from 'components/Header';
 import { Trans, useTranslation } from 'react-i18next';
-import { FlexDivRow, Paragraph, GridDiv, StyledLink, ExternalLink } from 'styles/common';
+import {
+	FlexDivRow,
+	Paragraph,
+	GridDiv,
+	StyledLink,
+	ExternalLink,
+	FlexDivCol,
+	FlexDivCentered,
+} from 'styles/common';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import Table from 'components/Table';
 import { CellProps } from 'react-table';
@@ -15,6 +23,8 @@ import { members, ambassadorMultisig } from 'constants/ambassadorMultisig';
 import { Svg } from 'react-optimized-image';
 import LinkIcon from 'assets/svg/link-blue.svg';
 import { ethers } from 'ethers';
+
+import HeroGraphic from 'assets/svg/hero.svg';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -64,10 +74,15 @@ const HomePage: React.FC = () => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Page>
-				<Header title={t('ambassadors.title')} first />
-				<BoxContainer>
+				<HeroContainer>
+					<Hero>{t('home.hero')}</Hero>
 					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
-				</BoxContainer>
+				</HeroContainer>
+
+				<SvgContainer>
+					<HeroSvg src={HeroGraphic} />
+				</SvgContainer>
+
 				<Header title={t('delegation.title')} />
 				<StyledGrid>
 					{protocols.map((protocol, i) => {
@@ -121,12 +136,49 @@ const StyledGrid = styled(GridDiv)`
 
 	@media only screen and (max-width: 1266px) {
 		grid-template-columns: auto;
+		padding: 0px 16px;
 	}
 `;
 
 const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	max-width: ${MAX_PAGE_WIDTH}px;
 	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
+	@media only screen and (max-width: 1266px) {
+		padding: 0px 16px;
+	}
+`;
+
+const HeroContainer = styled(FlexDivCol)`
+	max-width: ${MAX_PAGE_WIDTH}px;
+	margin: 120px auto 20px auto;
+	@media only screen and (max-width: 1266px) {
+		padding: 0px 16px;
+	}
+`;
+
+const Hero = styled.div`
+	font-size: 40px;
+	font-family: ${(props) => props.theme.fonts.expanded};
+	color: ${(props) => props.theme.colors.white};
+	text-transform: uppercase;
+	margin-bottom: 16px;
+
+	@media only screen and (max-width: 1266px) {
+		font-size: 32px;
+	}
+`;
+
+const SvgContainer = styled(FlexDivCentered)`
+	width: 100%;
+	align-items: center;
+	margin: 48px auto;
+	padding: 48px 0px;
+`;
+
+const HeroSvg = styled(Svg)`
+	@media only screen and (min-width: 1266px) {
+		transform: scaleX(1.5);
+	}
 `;
 
 const StyledTable = styled(Table)`
@@ -147,6 +199,7 @@ const StyledParagraph = styled(Paragraph)`
 	font-family: ${(props) => props.theme.fonts.regular};
 	color: ${(props) => props.theme.colors.white};
 	text-transform: none;
+	line-height: 20px;
 `;
 
 const StyledExternalIcon = styled(ExternalLink)``;

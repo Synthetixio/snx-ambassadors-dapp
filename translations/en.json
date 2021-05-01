@@ -1,6 +1,8 @@
 {
 	"home": {
-		"page-title": "Home | Synthetix Ambassadors"
+		"page-title": "Home | Synthetix Ambassadors",
+		"hero": "Synthetix ambassadors",
+		"subhero": "The Synthetix Ambassadors programme is for synthetix community members to delegate their third-party voting weights to the ambassadors who aim to vote in the best interest of the synthetix ecosystem."
 	},
 	"ambassadors": {
 		"title": "Mission",

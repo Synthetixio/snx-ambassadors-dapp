@@ -580,6 +580,8 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 
 	@media only screen and (max-width: 1266px) {
 		grid-template-columns: auto;
+		padding: 0px 16px;
+	}
 	}
 `;
 

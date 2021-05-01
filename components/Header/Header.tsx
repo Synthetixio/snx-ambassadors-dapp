@@ -43,6 +43,9 @@ const HeaderContainer = styled(FlexDivRow)<{ first?: boolean }>`
 	text-transform: uppercase;
 	justify-content: flex-start;
 	align-items: center;
+	@media only screen and (max-width: 1266px) {
+		padding: 0px 16px;
+	}
 `;
 
 const BackIcon = styled.div`
