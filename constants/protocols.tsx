@@ -43,7 +43,7 @@ export const protocols = [
 	{
 		symbol: SupportedProtocol.AAVE,
 		logo: <Img src={Aave} />,
-		name: 'Uniswap',
+		name: 'Aave',
 		decimals: 18,
 		address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
 		subgraph: 'https://api.thegraph.com/subgraphs/name/aave/governance-sybil',
