@@ -1,6 +1,5 @@
 export const ROUTES = {
-	Delegate: '/',
-	Vote: 'https://snapshot.org/#/snxambassador.eth',
+	Vote: 'https://staking.synthetix.io/gov/snxambassador.eth',
 	Protocol: (ticker: string) => `/protocol/${ticker}`,
 };
 

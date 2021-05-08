@@ -18,13 +18,13 @@ const FooterComponent: React.FC = () => {
 					<Svg src={SNXLogo} />
 				</FooterLeft>
 				<FooterRight>
-					<StyledLink href={''}>
+					<StyledLink href={'https://discord.gg/8FPwRwTdd9'}>
 						<Svg src={Discord} />
 					</StyledLink>
-					<StyledLink href={''}>
+					<StyledLink href={'https://twitter.com/snxambassadors'}>
 						<Svg src={Twitter} />
 					</StyledLink>
-					<StyledLink href={''}>
+					<StyledLink href={'https://github.com/Synthetixio/snx-ambassadors-dapp'}>
 						<Svg src={Github} />
 					</StyledLink>
 				</FooterRight>

@@ -1,4 +1,7 @@
 {
+	"nav": {
+		"vote": "Vote"
+	},
 	"home": {
 		"page-title": "Home | Synthetix Ambassadors",
 		"hero": "Synthetix ambassadors",

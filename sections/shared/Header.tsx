@@ -72,7 +72,6 @@ const Header: FC = () => {
 	};
 
 	const NAV_LINKS = {
-		DELEGATE: ROUTES.Delegate,
 		VOTE: ROUTES.Vote,
 	};
 
@@ -95,11 +94,9 @@ const Header: FC = () => {
 						</StatsLogoWrap>
 					</HeaderSectionLeft>
 					<HeaderSectionRight>
-						{Object.entries(NAV_LINKS).map(([key, value]) => (
-							<HeaderLink key={key} onClick={() => router.push(value)}>
-								{key}
-							</HeaderLink>
-						))}
+						<HeaderLink href={ROUTES.Vote} target="_blank">
+							{t('nav.vote')}
+						</HeaderLink>
 						<DropdownContainer>
 							<OutsideClickHandler onOutsideClick={() => setWalletOptionsModalOpened(false)}>
 								{isWalletConnected ? (
@@ -173,17 +170,9 @@ const Header: FC = () => {
 			</HeaderContainer>
 			{menuOpen ? (
 				<MobileMenu>
-					{Object.entries(NAV_LINKS).map(([key, value]) => (
-						<MobileLink
-							key={key}
-							onClick={() => {
-								router.push(value);
-								toggleMenu();
-							}}
-						>
-							{key}
-						</MobileLink>
-					))}
+					<MobileLink href={ROUTES.Vote} target="_blank">
+						{t('nav.vote')}
+					</MobileLink>
 				</MobileMenu>
 			) : null}
 		</>
@@ -247,10 +236,12 @@ const StyledLink = styled.div`
 	cursor: pointer;
 `;
 
-const HeaderLink = styled.div`
-	margin-left: 25px;
+const HeaderLink = styled.a`
+	${linkCSS}
 	cursor: pointer;
+	margin-left: 25px;
 	text-transform: uppercase;
+	color: ${(props) => props.theme.colors.white};
 	@media only screen and (max-width: 799px) {
 		display: none;
 	}
@@ -276,9 +267,11 @@ const MobileMenu = styled.div`
 	}
 `;
 
-const MobileLink = styled.div`
-	margin: 0 0 40px 30px;
+const MobileLink = styled.a`
+	${linkCSS}
 	cursor: pointer;
+	color: ${(props) => props.theme.colors.white};
+	margin: 0 0 40px 30px;
 	text-transform: uppercase;
 `;
 
