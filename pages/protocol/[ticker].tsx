@@ -582,7 +582,6 @@ const BoxContainer = styled(GridDiv)<{ first?: boolean }>`
 		grid-template-columns: auto;
 		padding: 0px 16px;
 	}
-	}
 `;
 
 const StyledCard = styled(GradientCard)`
