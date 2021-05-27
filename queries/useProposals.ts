@@ -28,8 +28,13 @@ export const useProtocolProposals = (protocolId: SupportedProtocol) => {
 		async () => {
 			const protocolsObj = protocolsBySymbol();
 
+			const subgraph =
+				protocolId === SupportedProtocol.AAVE
+					? 'https://api.thegraph.com/subgraphs/name/aave/governance-sybil'
+					: protocolsObj[protocolId].subgraph;
+
 			const proposalsResult = await graphResultsPager({
-				api: protocolsObj[protocolId].subgraph,
+				api: subgraph,
 				query: {
 					entity: 'proposals',
 					selection: {
