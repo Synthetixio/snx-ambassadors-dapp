@@ -4,7 +4,6 @@ import { Svg } from 'react-optimized-image';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { useTranslation } from 'react-i18next';
 import { useRecoilValue } from 'recoil';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import AmbassadorLogo from 'assets/svg/ambassador-logo.svg';
@@ -53,7 +52,6 @@ const Header: FC = () => {
 		isHardwareWallet,
 		switchAccounts,
 	} = Connector.useContainer();
-	const router = useRouter();
 
 	const [menuOpen, setMenuOpen] = useState(false);
 
@@ -69,10 +67,6 @@ const Header: FC = () => {
 		if (network?.useOvm) {
 			return `0Ξ ${network?.name}`;
 		} else return network?.name;
-	};
-
-	const NAV_LINKS = {
-		VOTE: ROUTES.Vote,
 	};
 
 	return (

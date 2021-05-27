@@ -108,7 +108,7 @@ const Protocol: React.FC = () => {
 
 	const [transactionType, setTransactionType] = useState<TransactionType | null>(null);
 	const [error, setError] = useState<string | null>('');
-	const [_, setTxHash] = useState<string | null>(null);
+	const [, setTxHash] = useState<string | null>(null);
 	const [txModalOpen, setTxModalOpen] = useState<boolean>(false);
 
 	const protocolTicker = ticker as SupportedProtocol;
