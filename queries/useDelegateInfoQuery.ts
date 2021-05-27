@@ -5,6 +5,7 @@ import { protocolsBySymbol, SupportedProtocol } from 'constants/protocols';
 import { ambassadorMultisig } from 'constants/ambassadorMultisig';
 import { useRecoilValue } from 'recoil';
 import { appReadyState } from 'store/app';
+import { ethers } from 'ethers';
 
 export type DelegateInfo = {
 	id: string;
@@ -25,6 +26,21 @@ export const useDelegateInfoQuery = (protocolId: SupportedProtocol) => {
 		async () => {
 			const protocolsObj = protocolsBySymbol();
 
+			const properties =
+				protocolId === SupportedProtocol.AAVE
+					? [
+							'id',
+							'totalVotingPower',
+							'usersVotingRepresentedAmount',
+							'votes{id,support,votingPower,proposal{id}}',
+					  ]
+					: [
+							'id',
+							'delegatedVotes',
+							'tokenHoldersRepresentedAmount',
+							'votes{id,support,votes,proposal{id}}',
+					  ];
+
 			const delegatesResult = await graphResultsPager({
 				api: protocolsObj[protocolId].subgraph,
 				query: {
@@ -36,25 +52,36 @@ export const useDelegateInfoQuery = (protocolId: SupportedProtocol) => {
 							id: `\\"${ambassadorMultisig.toLocaleLowerCase()}\\"`,
 						},
 					},
-					properties: [
-						'id',
-						'delegatedVotes',
-						'tokenHoldersRepresentedAmount',
-						'votes{id,support,votesRaw,votes,voter{id},proposal{id}}',
-					],
+					properties: properties,
 				},
 			});
+
+			if (protocolId === SupportedProtocol.AAVE) {
+				delegatesResult[0].delegatedVotes = delegatesResult[0].totalVotingPower;
+				delegatesResult[0].tokenHoldersRepresentedAmount =
+					delegatesResult[0].usersVotingRepresentedAmount;
+			}
 
 			let votes = [] as any;
 
 			if (delegatesResult && delegatesResult[0] && delegatesResult[0].votes.length > 0) {
-				votes = delegatesResult[0].votes
-					.sort((a: any, b: any) => (parseInt(a.proposal.id) > parseInt(b.proposal.id) ? 1 : -1))
-					.map((v: { proposal: { id: string }; support: boolean; votes: string }) => ({
-						proposal: parseInt(v.proposal.id),
-						votes: parseFloat(v.votes),
-						support: v.support,
-					}));
+				if (protocolId === SupportedProtocol.AAVE) {
+					votes = delegatesResult[0].votes
+						.sort((a: any, b: any) => (parseInt(a.proposal.id) > parseInt(b.proposal.id) ? 1 : -1))
+						.map((v: { proposal: { id: string }; support: boolean; votingPower: string }) => ({
+							proposal: parseInt(v.proposal.id),
+							votes: parseFloat(ethers.utils.formatEther(v.votingPower)),
+							support: v.support,
+						}));
+				} else {
+					votes = delegatesResult[0].votes
+						.sort((a: any, b: any) => (parseInt(a.proposal.id) > parseInt(b.proposal.id) ? 1 : -1))
+						.map((v: { proposal: { id: string }; support: boolean; votes: string }) => ({
+							proposal: parseInt(v.proposal.id),
+							votes: parseFloat(v.votes),
+							support: v.support,
+						}));
+				}
 			}
 
 			return {
