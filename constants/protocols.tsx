@@ -46,7 +46,7 @@ export const protocols = [
 		name: 'Aave',
 		decimals: 18,
 		address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
-		subgraph: 'https://api.thegraph.com/subgraphs/name/aave/governance-sybil',
+		subgraph: 'https://api.thegraph.com/subgraphs/name/aschmidt20/governance-v2-delegate',
 	},
 	{
 		symbol: SupportedProtocol.RAD,
