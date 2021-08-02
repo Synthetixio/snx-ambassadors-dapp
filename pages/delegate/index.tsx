@@ -23,9 +23,10 @@ import { members, ambassadorMultisig } from 'constants/ambassadorMultisig';
 import { Svg } from 'react-optimized-image';
 import LinkIcon from 'assets/svg/link-blue.svg';
 import { ethers } from 'ethers';
+
 import HeroGraphic from 'assets/svg/hero.svg';
 
-const HomePage: React.FC = () => {
+const Delegate: React.FC = () => {
 	const { t } = useTranslation();
 
 	const protocolDelegates = useProtocolDelegateData();
@@ -69,30 +70,51 @@ const HomePage: React.FC = () => {
 	return (
 		<>
 			<Head>
-				<title>{t('home.page-title')}</title>
+				<title>{t('Delegate | Synthetix Ambassadors')}</title>
 				<link rel="icon" href="/favicon.ico" />
-				;<link
-					href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-					rel="stylesheet"
-					integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-					crossOrigin="anonymous"
-				/>
 			</Head>
 			<Page>
-				<HeroContainer>
-					<Hero>{t('home.hero')}</Hero>
-					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
-				</HeroContainer>
 
-				<SvgContainer>
-					<HeroSvg src={HeroGraphic} />
-				</SvgContainer>
+				<Header title={t('delegation.title')} />
+				<StyledGrid>
+					{protocols.map((protocol, i) => {
+						return (
+							<ProtocolBox
+								key={i}
+								tokenInfo={protocol}
+								votingPower={protocolDelegates[protocol.symbol]?.data?.delegatedVotes ?? 0}
+								delegated={protocolDelegators[protocol.symbol]?.data ?? 0}
+							/>
+						);
+					})}
+				</StyledGrid>
+				<Header title={t('members.title')} />
+				<BoxContainer>
+					<StyledParagraph>
+						<Trans
+							i18nKey="members.helper"
+							values={{ ambassadorMultisig }}
+							components={[
+								<StyledLink href={`https://etherscan.io/address/${ambassadorMultisig}`} />,
+							]}
+						/>
+					</StyledParagraph>
+				</BoxContainer>
+				<BoxContainer>
+					<StyledTable
+						palette="primary"
+						columns={memberColumns}
+						data={members}
+						isLoading={false}
+						showPagination={false}
+					/>
+				</BoxContainer>
 			</Page>
 		</>
 	);
 };
 
-export default HomePage;
+export default Delegate;
 
 const Page = styled.div`
 	padding-bottom: 24px;
@@ -142,7 +164,9 @@ const SvgContainer = styled(FlexDivCentered)`
 `;
 
 const HeroSvg = styled(Svg)`
-	width: 100%;
+	@media only screen and (min-width: 1440px) {
+		display: none;
+	}
 `;
 
 const StyledTable = styled(Table)`
@@ -164,7 +188,6 @@ const StyledParagraph = styled(Paragraph)`
 	color: ${(props) => props.theme.colors.white};
 	text-transform: none;
 	line-height: 20px;
-	max-width: 800px;
 `;
 
 const StyledExternalIcon = styled(ExternalLink)``;
