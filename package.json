@@ -54,7 +54,7 @@
 		"svg-react-loader": "0.4.6",
 		"unstated-next": "1.1.0",
 		"use-immer": "0.4.1",
-		"web3": "^1.5.0"
+		"web3": "1.2.9"
 	},
 	"devDependencies": {
 		"@types/color": "^3.0.1",
