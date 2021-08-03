@@ -16,6 +16,7 @@ const FooterComponent: React.FC = () => {
 			<FooterInner>
 				<FooterLeft>
 					<Svg src={SNXLogo} />
+				Copyright 2021 Sytnhetix Ambassadors	
 				</FooterLeft>
 				<FooterRight>
 					<StyledLink href={'https://discord.gg/8FPwRwTdd9'}>

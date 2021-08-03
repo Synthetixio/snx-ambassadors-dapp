@@ -88,8 +88,14 @@ const Header: FC = () => {
 						</StatsLogoWrap>
 					</HeaderSectionLeft>
 					<HeaderSectionRight>
+						<HeaderLink href={ROUTES.Delegate}>
+							{t('Delegate')}
+						</HeaderLink>
 						<HeaderLink href={ROUTES.Vote} target="_blank">
 							{t('nav.vote')}
+						</HeaderLink>
+						<HeaderLink href={ROUTES.Blog}>
+							{t('Blog')}
 						</HeaderLink>
 						<DropdownContainer>
 							<OutsideClickHandler onOutsideClick={() => setWalletOptionsModalOpened(false)}>
