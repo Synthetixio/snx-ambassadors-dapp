@@ -85,6 +85,8 @@ return (
       </div>
     </a>
   </div>
+
+
   <Masonry
     breakpointCols={breakpointColumnsObj}
     className="my-masonry-grid"
@@ -287,5 +289,3 @@ export default blog;
 const Page = styled.div`
 	padding-bottom: 24px;
 `;
-
-
