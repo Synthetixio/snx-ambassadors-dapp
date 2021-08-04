@@ -390,5 +390,3 @@ export const Tooltip = styled(Tippy)`
 export const UpperCased = styled.span`
 	text-transform: uppercase;
 `;
-
-

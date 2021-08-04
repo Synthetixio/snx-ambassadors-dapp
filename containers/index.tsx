@@ -17,5 +17,3 @@ export const WithAppContainers: FC<WithAppContainersProps> = ({ children }) => (
 );
 
 export default WithAppContainers;
-
-

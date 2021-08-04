@@ -107,7 +107,12 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 				<link rel="icon" href="/images/favicon.png" />
 				<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter" />
 				<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-				<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossOrigin="anonymous" async></script>
+				<script
+					src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+					integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D"
+					crossOrigin="anonymous"
+					async
+				></script>
 				<script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
 			</Head>
 			<ThemeProvider theme={scTheme}>
