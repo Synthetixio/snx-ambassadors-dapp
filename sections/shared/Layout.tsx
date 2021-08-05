@@ -28,7 +28,6 @@ const Section = styled.section`
 	min-height: 90vh;
 	padding-top: 20px;
 	padding-bottom: 80px;
-	background-color: rgb(6, 6, 27) !important;
 
 	@media only screen and (max-width: 1020px) {
 		width: 100%;
@@ -37,8 +36,8 @@ const Section = styled.section`
 
 const GlobalStyle = createGlobalStyle`
   body {
-		background-color: ${(props) => props.theme.colors.black}!important;
-		color: ${(props) => props.theme.colors.white}!important;
+		background-color: ${(props) => props.theme.colors.black};
+		color: ${(props) => props.theme.colors.white};
 		margin: 0;
   }
 
