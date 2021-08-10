@@ -7,14 +7,14 @@
 		"start": "next start",
 		"tsc": "tsc --noEmit",
 		"format": "prettier --write \"**/*.{ts,tsx}\"",
-		"lint": "eslint . --ext ts,.tsx",
+		"lint": "eslint . --ext ts,.tsx && tsc",
 		"lint:fix": "eslint . --ext ts,.tsx --fix"
 	},
 	"dependencies": {
 		"@artsy/fresnel": "1.3.0",
 		"@metamask/detect-provider": "1.2.0",
 		"@reach/dialog": "0.12.1",
-		"@synthetixio/contracts-interface": "2.41.0",
+		"@synthetixio/contracts-interface": "^2.47.0-ovm.5",
 		"@synthetixio/optimism-networks": "0.0.14",
 		"@synthetixio/providers": "0.0.12",
 		"@synthetixio/transaction-notifier": "0.0.9",
