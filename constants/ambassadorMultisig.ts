@@ -8,11 +8,11 @@ export const members = [
 		address: '0x98Ab20307fdABa1ce8b16d69d22461c6dbe85459',
 	},
 	{
-		name: 'farmwell',
-		address: '0x9d256b839C1b46e57122eBb3C5e6da97288FaCf1',
+		name: 'Afif | Synthetix',
+		address: '0xDF09B6BB09FdEe5f8d4c17C6642F0A54D6A7654A',
 	},
 	{
-		name: 'SynthaMan',
-		address: '0x0bc3668d2AaFa53eD5E5134bA13ec74ea195D000',
+		name: 'andy | synthetix',
+		address: '0xbeBF7295A9Ddc37e33609790b12FBe3dAF93cC73',
 	},
 ];
