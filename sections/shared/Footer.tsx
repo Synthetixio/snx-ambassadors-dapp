@@ -56,6 +56,8 @@ const FooterInner = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	font-size: 14px;
+	margin-left: -50px;
 
 	@media only screen and (max-width: 1020px) {
 		width: 100%;
