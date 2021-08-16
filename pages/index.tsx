@@ -32,6 +32,10 @@ const HomePage: React.FC = () => {
 				<SvgContainer>
 					<HeroSvg src={HeroGraphic} />
 				</SvgContainer>
+
+				<HeroContainer>
+					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
+				</HeroContainer>
 			</Page>
 		</>
 	);

@@ -1,3 +1,7 @@
+body {
+    color: #ffffff;
+    background-color: #06061c;
+}
 
 a:hover {
     color: #03cefc;
@@ -311,3 +315,11 @@ a {
     margin-top: 80px;
 }
 
+.dIrhmf {
+    background-color: #06061c;
+}
+
+.snxa-footer-copyright {
+    font-size: 13px;
+    margin-left: -30px;
+}
