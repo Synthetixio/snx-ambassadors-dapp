@@ -18,15 +18,32 @@ const breakpointColumnsObj = {
 const blog: React.FC = () => {
 
     const [blogPosts, setBlogPosts] = useState([]);
+    const [allBlogPosts, setAllBlogPosts] = useState([]);
     const [featuredBlogPosts, setFeaturedBlogPosts] = useState([]);
+    const [allFeaturedBlogPosts, setAllFeaturedBlogPosts] = useState([]);
 
     useState(() => {
         if (blogPosts.length != 0) return;
         getGhostPosts().then(posts => {
-            setFeaturedBlogPosts(posts.filter(post => post.featured));
+            let featuredBlogPostsFilter = posts.filter(post => post.featured);
+            setFeaturedBlogPosts(featuredBlogPostsFilter);
+            setAllFeaturedBlogPosts(featuredBlogPostsFilter);
+
             setBlogPosts(posts);
+            setAllBlogPosts(posts);
         });
     });
+
+    let filterBlogs = (e) => {
+
+        let searchText = e.target.value;
+
+        let filteredPosts = allBlogPosts.filter(post => post.html.indexOf(searchText) != -1);
+        setBlogPosts(filteredPosts);
+
+        let filteredFeaturedPosts = allFeaturedBlogPosts.filter(post => post.html.indexOf(searchText) != -1);
+        setFeaturedBlogPosts(filteredFeaturedPosts);
+    };
 
     return (
         <>
@@ -46,15 +63,21 @@ const blog: React.FC = () => {
                         <div className="header-search">
                             <h1 className="blog-header">Blog</h1>
                             <div className="container search-container">
-                                <form className="searchbox">
+                                <br/>
+                                {/*<form className="searchbox">*/}
+                                <form>
                                     <input
                                         type="search"
                                         placeholder="Search.."
                                         name="search"
                                         className="searchbox-input"
                                         required
+                                        // value={searchText}
+                                        onChange={filterBlogs}
                                     />
+
                                     <input type="submit" className="searchbox-submit"/>
+
                                     <span className="searchbox-icon">
 										<svg
                                             width={31}
