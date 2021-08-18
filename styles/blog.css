@@ -8,6 +8,11 @@ a:hover {
     opacity: 0.8;
 }
 
+a {
+    color: #03d1ff;
+    text-decoration: underline;
+}
+
 .my-masonry-grid {
   display: -webkit-box; /* Not needed if autoprefixing */
   display: -ms-flexbox; /* Not needed if autoprefixing */
@@ -44,7 +49,7 @@ a {
 }
 
 .blog-header {
-    font-family: GT America Expanded Bold;
+    font-family: GT America Expanded Black;
     font-style: normal;
     font-weight: 900;
     font-size: 40px;
@@ -128,12 +133,11 @@ a {
 }
 
 .blurb {
-    font-family: GT America;
-    font-style: normal;
+    font-family: 'GT America Mono';
+    font-size: 17px;
+    color: #00D1FF;
     font-weight: bold;
-    font-size: 13px;
-    line-height: 24px;
-    color: #00D1FF;    
+    vertical-align: middle;
 }
 
 .header-search {
@@ -322,4 +326,18 @@ a {
 .snxa-footer-copyright {
     font-size: 13px;
     margin-left: -30px;
+}
+
+.pagination.wrapper {
+    float: right;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    color: #03d1ff;
+    text-decoration: none;
+    background-color: #06061c00;
+    border: 1px solid #8e8e98;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
