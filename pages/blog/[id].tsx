@@ -1,25 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FlexDivRow, Paragraph, ExternalLink } from 'styles/common';
-
-//...
+import {useRouter} from "next/router";
+import {getGhostPost, getGhostPosts} from "../../containers/GhostBlog/ghost";
+import Moment from 'moment';
+import Link from "next/link";
 
 const blog: React.FC = () => {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
 
-	// eslint-disable-next-line react-hooks/rules-of-hooks
-	// eslint-disable-next-line react-hooks/rules-of-hooks
+	console.log('blog');
 
-	// eslint-disable-next-line react-hooks/rules-of-hooks
+	const { id } = useRouter().query;
+
+	const [blog, setBlog] = useState({});
+
+	useState(() => {
+
+		//prevent invalid requests
+		if (!id) return;
+		if (blog.id) return;
+
+		getGhostPost(id).then(post => {
+			setBlog(post);
+		});
+	});
 
 	return (
 		<>
 			<Head>
 				<title>Blog Post | Synthetix Ambassadors</title>
 				<link rel="icon" href="/favicon.ico" />
-				;
 				<link
 					href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 					rel="stylesheet"
@@ -28,12 +40,13 @@ const blog: React.FC = () => {
 				/>
 			</Head>
 			<Page>
-				;
+				{blog && (
+
 				<div className="container blog-container">
 					<div className="featured-post">
-						<p className=" blog-date">APR 20, 2021</p>
+						<p className=" blog-date">{Moment(blog.updated_at).format('d MMM yyyy')}</p>
 						<span className="back-btn">
-							<a href="blog">
+							<Link href="/blog">
 								<svg
 									width={12}
 									height={12}
@@ -46,36 +59,23 @@ const blog: React.FC = () => {
 										fill="#00D1FF"
 									/>
 								</svg>
-							</a>
+							</Link>
 						</span>
 						<span>
 							<h1 className="featured-blog-header-inner">
-								SNX liquidity incentive for sUSD/DHT Uniswap pool
+								{blog.title}
 							</h1>
 						</span>
-						<img className="featured-post-img" src="/assets/blog/blog-img1.jpg" alt="img" />
+
+						<img className="featured-post-img" src={blog.feature_image} alt="img" />
+
 						<p className="post-excerpt-intro">
-							The synthetixDAO has agreed to contribute 3000 SNX per week in incentives towards a
-							new liquidity pool of DHT and sUSD for ten weeks.
+							{blog.title}
 						</p>
-						<p className="post-content-blog-inner">
-							With the success of multi-collateral loans on Synthetix over the last 6 months, the
-							time has come to sunset previous EtherCollateral loan contracts that are no longer
-							active. Specifically, the following contracts will be deprecated:
-							<br />
-							<br />
-							<strong>Ether Collateral v3.0 (SIP-85)</strong>
-							At this point, opening of new loans on these contracts has effectively been paused.
-							Users with loans outstanding on these contracts will have until 00:00 UTC on June
-							25th, 2021 (one month from now) to repay and close existing loans, after which point
-							liquidation of any remaining loans will be enabled.
-							<br />
-							<br />
-							Any users with existing loans originated from the trial EtherCollateral loans can
-							close them here. Once liquidations are enabled, any user will be able repay sUSD /
-							sETH owed on a loan and claim all of the ETH collateral as a penalty, so users who
-							still have outstanding loans on these contracts should close them out immediately.
+						<p className="post-content-blog-inner" >
+							<div dangerouslySetInnerHTML={{ __html: blog.html }} />
 						</p>
+
 						<div className="social-share">
 							<span className="social-share-icon">
 								<svg
@@ -124,6 +124,8 @@ const blog: React.FC = () => {
 						</div>
 					</div>
 				</div>
+
+				)}
 			</Page>
 		</>
 	);
