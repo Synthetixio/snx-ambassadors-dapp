@@ -396,3 +396,25 @@ i.fa.fa-search {
     font-size: 20px;
     color: #B9BAC7;
 }
+
+
+@media screen and (max-width: 600px) {
+    .header-search {
+        justify-content: center;
+    }
+
+    .blog-header {
+        font-family: GT America Expanded Black;
+        font-style: normal;
+        font-weight: 900;
+        font-size: 30px;
+        line-height: 20px;
+        color: #FFFFFF;
+        text-transform: uppercase;
+        padding: 20px 0 10px 0;
+    }
+
+    .input-group {
+        margin-bottom: 30px;
+    }
+  }
