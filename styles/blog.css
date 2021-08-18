@@ -134,7 +134,7 @@ a {
 
 .blurb {
     font-family: 'GT America Mono';
-    font-size: 17px;
+    font-size: 15px;
     color: #00D1FF;
     font-weight: bold;
     vertical-align: middle;
@@ -142,9 +142,7 @@ a {
 
 .header-search {
     display: flex;
-    align-content: stretch;
-    justify-content: flex-end;
-    align-items: baseline;
+    justify-content: flex-start;
 }
 
 .searchbox{
@@ -338,6 +336,63 @@ a {
     color: #03d1ff;
     text-decoration: none;
     background-color: #06061c00;
-    border: 1px solid #8e8e98;
+    border: 1px solid #8e8e9847;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.page-link:hover {
+    z-index: 2;
+    color: #ffffff;
+    background-color: #e9ecef00;
+    border-color: #000000;
+    border: 1px solid #8e8e9847;
+}
+
+img {
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    height: fit-content;
+}
+
+.btn-secondary {
+    color: #B9BAC7;
+    background-color: #6c757d00;
+    border-color: #6c757d00;
+    font-size: 25px;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff0;
+    background-clip: padding-box;
+    border: 1px solid #ced4da52;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    padding: 12px;
+}
+
+.form-control:focus {
+    color: #ffffff;
+    background-color: #ffffff00;
+    border-color: #03d1ff;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 0%);
+}
+
+i.fa.fa-search {
+    margin-left: -30px;
+    vertical-align: middle;
+    padding: 15px 10px 0 0;
+    font-size: 20px;
+    color: #B9BAC7;
 }

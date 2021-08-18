@@ -59,43 +59,41 @@ const blog: React.FC = () => {
 					integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 					crossOrigin="anonymous"
 				/>
+				<link
+					rel="stylesheet"
+					href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+				></link>
 			</Head>
 			<Page>
 				<>
 					<div className="container blog-container">
-						<div className="header-search">
-							<h1 className="blog-header">Blog</h1>
-							<div className="container search-container">
-								<br />
-								{/*<form className="searchbox">*/}
-								<form>
-									<input
-										type="search"
-										placeholder="Search.."
-										name="search"
-										className="searchbox-input"
-										required
-										// value={searchText}
-										onChange={filterBlogs}
-									/>
-
-									<input type="submit" className="searchbox-submit" />
-
-									<span className="searchbox-icon">
-										<svg
-											width={31}
-											height={31}
-											viewBox="0 0 31 31"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												d="M30.5649 28.4351L24.9999 22.9151C27.1601 20.2217 28.2062 16.803 27.9231 13.362C27.6401 9.92105 26.0494 6.71927 23.4782 4.41507C20.907 2.11086 17.5506 0.879366 14.0993 0.973806C10.648 1.06825 7.364 2.48144 4.92263 4.92281C2.48126 7.36418 1.06806 10.6482 0.973623 14.0995C0.879183 17.5508 2.11068 20.9072 4.41488 23.4784C6.71909 26.0496 9.92087 27.6403 13.3619 27.9233C16.8029 28.2064 20.2215 27.1602 22.9149 25.0001L28.4349 30.5201C28.5744 30.6607 28.7403 30.7723 28.9231 30.8484C29.1058 30.9246 29.3019 30.9638 29.4999 30.9638C29.6979 30.9638 29.894 30.9246 30.0768 30.8484C30.2596 30.7723 30.4255 30.6607 30.5649 30.5201C30.8353 30.2404 30.9864 29.8666 30.9864 29.4776C30.9864 29.0886 30.8353 28.7148 30.5649 28.4351ZM14.4999 25.0001C12.4232 25.0001 10.3931 24.3843 8.66643 23.2305C6.93971 22.0768 5.5939 20.4369 4.79918 18.5183C4.00446 16.5997 3.79653 14.4885 4.20167 12.4517C4.60682 10.4149 5.60685 8.54393 7.0753 7.07548C8.54375 5.60703 10.4147 4.607 12.4515 4.20185C14.4883 3.79671 16.5995 4.00465 18.5181 4.79937C20.4367 5.59409 22.0766 6.9399 23.2304 8.66661C24.3841 10.3933 24.9999 12.4234 24.9999 14.5001C24.9999 17.2849 23.8937 19.9556 21.9245 21.9247C19.9554 23.8939 17.2847 25.0001 14.4999 25.0001Z"
-												fill="#B9BAC7"
+						<div className="row">
+							<div className="col-md-6 col-sm-12">
+								<div className="header-search">
+									<h1 className="blog-header">Blog</h1>
+								</div>
+							</div>
+							<div className="col-md-6 col-sm-12">
+								<div className="search-container">
+									<br />
+									{/*<form className="searchbox">*/}
+									<form>
+										<div className="input-group">
+											<input
+												type="search"
+												name="search"
+												className="form-control"
+												placeholder="Search..."
+												required
+												// value={searchText}
+												onChange={filterBlogs}
 											/>
-										</svg>
-									</span>
-								</form>
+											<span>
+												<i className="fa fa-search" />
+											</span>
+										</div>
+									</form>
+								</div>
 							</div>
 						</div>
 						{featuredBlogPosts.map((blog) => (
