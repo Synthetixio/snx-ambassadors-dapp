@@ -7,6 +7,9 @@ import Masonry from 'components/Masonry';
 import { getGhostPosts } from '../../containers/GhostBlog/ghost';
 import Moment from 'moment';
 import Link from 'next/link';
+import ReactPaginate from 'react-paginate';
+
+const ARTICLES_PER_PAGE = 3;
 
 const breakpointColumnsObj = {
 	default: 3,
@@ -16,36 +19,77 @@ const breakpointColumnsObj = {
 };
 
 const blog: React.FC = () => {
-	const [blogPosts, setBlogPosts] = useState([]);
-	const [allBlogPosts, setAllBlogPosts] = useState([]);
-	const [featuredBlogPosts, setFeaturedBlogPosts] = useState([]);
-	const [allFeaturedBlogPosts, setAllFeaturedBlogPosts] = useState([]);
+	const [pageCount, setPageCount] = useState(0);
 
-	useState(() => {
+    const [allFeaturedBlogPosts, setAllFeaturedBlogPosts] = useState([]);
+	const [allBlogPosts, setAllBlogPosts] = useState([]);
+
+    const [featuredBlogPosts, setFeaturedBlogPosts] = useState([]);
+    const [blogPosts, setBlogPosts] = useState([]);
+
+    const [displayFeaturedBlogPosts, setDisplayFeaturedBlogPosts] = useState([]);
+    const [displayBlogPosts, setDisplayBlogPosts] = useState([]);
+
+	const [searchText, setSearchText] = useState('');
+
+    useState(() => {
 		// eslint-disable-next-line eqeqeq
 		if (blogPosts.length != 0) return;
 		getGhostPosts().then((posts) => {
 			let featuredBlogPostsFilter = posts.filter((post: { featured: any }) => post.featured);
-			setFeaturedBlogPosts(featuredBlogPostsFilter);
 			setAllFeaturedBlogPosts(featuredBlogPostsFilter);
-
-			setBlogPosts(posts);
 			setAllBlogPosts(posts);
+
+			paginateBlogs(0, posts, featuredBlogPostsFilter);
 		});
 	});
 
+    let handlePageClick = (data) => {
+		paginateBlogs(data.selected, blogPosts, featuredBlogPosts);
+	}
+
+    let paginateBlogs = (offest, blogPosts, featuredBlogPosts) => {
+
+		setFeaturedBlogPosts(featuredBlogPosts);
+		setBlogPosts(blogPosts);
+
+		//only show featured blogs on first page
+        if (offest == 0){
+            setDisplayFeaturedBlogPosts(featuredBlogPosts);
+        } else {
+            setDisplayFeaturedBlogPosts([]);
+        }
+
+        const blogCount = blogPosts.length;
+		setPageCount(Math.ceil(blogCount / ARTICLES_PER_PAGE));
+
+		const start = offest * ARTICLES_PER_PAGE;
+		const end = (offest+1) * ARTICLES_PER_PAGE;
+
+		const displayBlogs = [];
+        for (let i = start; i < end; i++){
+            if (i < blogCount) {
+                displayBlogs.push(blogPosts[i])
+            }
+        }
+
+        setDisplayBlogPosts(displayBlogs);
+    };
+
 	let filterBlogs = (e: { target: { value: any } }) => {
 		let searchText = e.target.value;
+		setSearchText(searchText);
+
+		console.log( 'filterBlogs');
+		console.log(searchText);
 
 		// eslint-disable-next-line eqeqeq
-		let filteredPosts = allBlogPosts.filter((post) => post.html.indexOf(searchText) != -1);
-		setBlogPosts(filteredPosts);
-
-		let filteredFeaturedPosts = allFeaturedBlogPosts.filter(
-			// eslint-disable-next-line eqeqeq
-			(post) => post.html.indexOf(searchText) != -1
+		let filteredPosts = allBlogPosts.filter((post) =>
+			post.html.indexOf(searchText) != -1
 		);
-		setFeaturedBlogPosts(filteredFeaturedPosts);
+
+		let filteredFeaturedPosts = []; //don't show featured posts when filtering
+		paginateBlogs(0, filteredPosts, filteredFeaturedPosts);
 	};
 
 	return (
@@ -85,7 +129,7 @@ const blog: React.FC = () => {
 												className="form-control"
 												placeholder="Search..."
 												required
-												// value={searchText}
+												value={searchText}
 												onChange={filterBlogs}
 											/>
 											<span>
@@ -96,7 +140,7 @@ const blog: React.FC = () => {
 								</div>
 							</div>
 						</div>
-						{featuredBlogPosts.map((blog) => (
+						{displayFeaturedBlogPosts.map((blog) => (
 							<Link href={'/blog/' + blog.id}>
 								<div className="featured-post">
 									<img className="featured-post-img" src={blog.feature_image} alt="img" />
@@ -126,7 +170,7 @@ const blog: React.FC = () => {
 							className="my-masonry-grid"
 							columnClassName="my-masonry-grid_column"
 						>
-							{blogPosts.map((blog) => (
+							{displayBlogPosts.map((blog) => (
 								<div>
 									<Link href={'/blog/' + blog.id}>
 										<div className="grid-item">
@@ -155,35 +199,49 @@ const blog: React.FC = () => {
 							))}
 						</Masonry>
 						<div className="pagination wrapper">
-							<nav aria-label="Page navigation example">
-								<ul className="pagination">
-									<li className="page-item">
-										<a className="page-link" href="#">
-											Previous
-										</a>
-									</li>
-									<li className="page-item">
-										<a className="page-link" href="#">
-											1
-										</a>
-									</li>
-									<li className="page-item">
-										<a className="page-link" href="#">
-											2
-										</a>
-									</li>
-									<li className="page-item">
-										<a className="page-link" href="#">
-											3
-										</a>
-									</li>
-									<li className="page-item">
-										<a className="page-link" href="#">
-											Next
-										</a>
-									</li>
-								</ul>
-							</nav>
+							{/*<nav aria-label="Page navigation example">*/}
+
+								<ReactPaginate
+									previousLabel={'previous'}
+									nextLabel={'next'}
+									breakLabel={'...'}
+									breakClassName={'break-me'}
+									pageCount={pageCount}
+									marginPagesDisplayed={2}
+									pageRangeDisplayed={ARTICLES_PER_PAGE}
+									onPageChange={handlePageClick}
+									containerClassName={'pagination'}
+									activeClassName={'active'}
+								/>
+
+
+								{/*<ul className="pagination">*/}
+								{/*	<li className="page-item">*/}
+								{/*		<a className="page-link" href="#">*/}
+								{/*			Previous*/}
+								{/*		</a>*/}
+								{/*	</li>*/}
+
+                                {/*    {currentPages.map((pageNo) => (*/}
+                                {/*        <li className="page-item">*/}
+								{/*			<a className="page-link" href="#">*/}
+								{/*				{(pageNo == currentPage) && (*/}
+								{/*					<b>{pageNo}</b>*/}
+								{/*				)}*/}
+								{/*				{(pageNo != currentPage) && (*/}
+								{/*					<>{pageNo}</>*/}
+								{/*				)}*/}
+								{/*			</a>*/}
+                                {/*        </li>*/}
+                                {/*    ))}*/}
+
+								{/*	<li className="page-item">*/}
+								{/*		<a className="page-link" href="#">*/}
+								{/*			Next*/}
+								{/*		</a>*/}
+								{/*	</li>*/}
+								{/*</ul>*/}
+							{/*</nav>*/}
 						</div>
 					</div>
 					{/* partial */}
