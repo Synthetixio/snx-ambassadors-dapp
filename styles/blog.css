@@ -257,7 +257,6 @@ a {
     text-align: center;
     color: #FFFFFF;
     padding-bottom: 30px;
-    max-width: 500px;
     margin: auto;
     display: block;
 
@@ -418,3 +417,7 @@ i.fa.fa-search {
         margin-bottom: 30px;
     }
   }
+
+  .input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+    padding-right: 45px;
+}

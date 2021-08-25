@@ -21,18 +21,18 @@ const breakpointColumnsObj = {
 const blog: React.FC = () => {
 	const [pageCount, setPageCount] = useState(0);
 
-    const [allFeaturedBlogPosts, setAllFeaturedBlogPosts] = useState([]);
+	const [, setAllFeaturedBlogPosts] = useState([]);
 	const [allBlogPosts, setAllBlogPosts] = useState([]);
 
-    const [featuredBlogPosts, setFeaturedBlogPosts] = useState([]);
-    const [blogPosts, setBlogPosts] = useState([]);
+	const [featuredBlogPosts, setFeaturedBlogPosts] = useState([]);
+	const [blogPosts, setBlogPosts] = useState([]);
 
-    const [displayFeaturedBlogPosts, setDisplayFeaturedBlogPosts] = useState([]);
-    const [displayBlogPosts, setDisplayBlogPosts] = useState([]);
+	const [displayFeaturedBlogPosts, setDisplayFeaturedBlogPosts] = useState([]);
+	const [displayBlogPosts, setDisplayBlogPosts] = useState([]);
 
 	const [searchText, setSearchText] = useState('');
 
-    useState(() => {
+	useState(() => {
 		// eslint-disable-next-line eqeqeq
 		if (blogPosts.length != 0) return;
 		getGhostPosts().then((posts) => {
@@ -44,49 +44,46 @@ const blog: React.FC = () => {
 		});
 	});
 
-    let handlePageClick = (data) => {
+	let handlePageClick = (data) => {
 		paginateBlogs(data.selected, blogPosts, featuredBlogPosts);
-	}
+	};
 
-    let paginateBlogs = (offest, blogPosts, featuredBlogPosts) => {
-
+	let paginateBlogs = (offest, blogPosts, featuredBlogPosts) => {
 		setFeaturedBlogPosts(featuredBlogPosts);
 		setBlogPosts(blogPosts);
 
 		//only show featured blogs on first page
-        if (offest == 0){
-            setDisplayFeaturedBlogPosts(featuredBlogPosts);
-        } else {
-            setDisplayFeaturedBlogPosts([]);
-        }
+		if (offest == 0) {
+			setDisplayFeaturedBlogPosts(featuredBlogPosts);
+		} else {
+			setDisplayFeaturedBlogPosts([]);
+		}
 
-        const blogCount = blogPosts.length;
+		const blogCount = blogPosts.length;
 		setPageCount(Math.ceil(blogCount / ARTICLES_PER_PAGE));
 
 		const start = offest * ARTICLES_PER_PAGE;
-		const end = (offest+1) * ARTICLES_PER_PAGE;
+		const end = (offest + 1) * ARTICLES_PER_PAGE;
 
 		const displayBlogs = [];
-        for (let i = start; i < end; i++){
-            if (i < blogCount) {
-                displayBlogs.push(blogPosts[i])
-            }
-        }
+		for (let i = start; i < end; i++) {
+			if (i < blogCount) {
+				displayBlogs.push(blogPosts[i]);
+			}
+		}
 
-        setDisplayBlogPosts(displayBlogs);
-    };
+		setDisplayBlogPosts(displayBlogs);
+	};
 
 	let filterBlogs = (e: { target: { value: any } }) => {
 		let searchText = e.target.value;
 		setSearchText(searchText);
 
-		console.log( 'filterBlogs');
+		console.log('filterBlogs');
 		console.log(searchText);
 
 		// eslint-disable-next-line eqeqeq
-		let filteredPosts = allBlogPosts.filter((post) =>
-			post.html.indexOf(searchText) != -1
-		);
+		let filteredPosts = allBlogPosts.filter((post) => post.html.indexOf(searchText) != -1);
 
 		let filteredFeaturedPosts = []; //don't show featured posts when filtering
 		paginateBlogs(0, filteredPosts, filteredFeaturedPosts);
@@ -201,46 +198,45 @@ const blog: React.FC = () => {
 						<div className="pagination wrapper">
 							{/*<nav aria-label="Page navigation example">*/}
 
-								<ReactPaginate
-									previousLabel={'previous'}
-									nextLabel={'next'}
-									breakLabel={'...'}
-									breakClassName={'break-me'}
-									pageCount={pageCount}
-									marginPagesDisplayed={2}
-									pageRangeDisplayed={ARTICLES_PER_PAGE}
-									onPageChange={handlePageClick}
-									containerClassName={'pagination'}
-									activeClassName={'active'}
-								/>
+							<ReactPaginate
+								previousLabel={'previous'}
+								nextLabel={'next'}
+								breakLabel={'...'}
+								breakClassName={'break-me'}
+								pageCount={pageCount}
+								marginPagesDisplayed={2}
+								pageRangeDisplayed={ARTICLES_PER_PAGE}
+								onPageChange={handlePageClick}
+								containerClassName={'pagination'}
+								activeClassName={'active'}
+							/>
 
+							{/*<ul className="pagination">*/}
+							{/*	<li className="page-item">*/}
+							{/*		<a className="page-link" href="#">*/}
+							{/*			Previous*/}
+							{/*		</a>*/}
+							{/*	</li>*/}
 
-								{/*<ul className="pagination">*/}
-								{/*	<li className="page-item">*/}
-								{/*		<a className="page-link" href="#">*/}
-								{/*			Previous*/}
-								{/*		</a>*/}
-								{/*	</li>*/}
+							{/*    {currentPages.map((pageNo) => (*/}
+							{/*        <li className="page-item">*/}
+							{/*			<a className="page-link" href="#">*/}
+							{/*				{(pageNo == currentPage) && (*/}
+							{/*					<b>{pageNo}</b>*/}
+							{/*				)}*/}
+							{/*				{(pageNo != currentPage) && (*/}
+							{/*					<>{pageNo}</>*/}
+							{/*				)}*/}
+							{/*			</a>*/}
+							{/*        </li>*/}
+							{/*    ))}*/}
 
-                                {/*    {currentPages.map((pageNo) => (*/}
-                                {/*        <li className="page-item">*/}
-								{/*			<a className="page-link" href="#">*/}
-								{/*				{(pageNo == currentPage) && (*/}
-								{/*					<b>{pageNo}</b>*/}
-								{/*				)}*/}
-								{/*				{(pageNo != currentPage) && (*/}
-								{/*					<>{pageNo}</>*/}
-								{/*				)}*/}
-								{/*			</a>*/}
-                                {/*        </li>*/}
-                                {/*    ))}*/}
-
-								{/*	<li className="page-item">*/}
-								{/*		<a className="page-link" href="#">*/}
-								{/*			Next*/}
-								{/*		</a>*/}
-								{/*	</li>*/}
-								{/*</ul>*/}
+							{/*	<li className="page-item">*/}
+							{/*		<a className="page-link" href="#">*/}
+							{/*			Next*/}
+							{/*		</a>*/}
+							{/*	</li>*/}
+							{/*</ul>*/}
 							{/*</nav>*/}
 						</div>
 					</div>
