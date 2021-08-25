@@ -337,7 +337,13 @@ a {
     background-color: #06061c00;
     border: 1px solid #8e8e9847;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: GT America Condensed-Bold,Inter;
+    font-size: 15px;
+    margin-top: 30px;
 }
+
 
 .page-link:hover {
     z-index: 2;
@@ -420,4 +426,14 @@ i.fa.fa-search {
 
   .input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
     padding-right: 45px;
+}
+
+
+li.page-link.active {
+    background-color: #03d1ff;
+    color: #fff;
+}
+
+li.page-link.disabled {
+    display: none;
 }

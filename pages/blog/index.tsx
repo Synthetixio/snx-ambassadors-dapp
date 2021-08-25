@@ -200,10 +200,13 @@ const blog: React.FC = () => {
 
 							<ReactPaginate
 								previousLabel={'previous'}
+								previousClassName={'page-link'}
 								nextLabel={'next'}
+								nextClassName={'page-link'}
 								breakLabel={'...'}
 								breakClassName={'break-me'}
 								pageCount={pageCount}
+								pageClassName={'page-link'}
 								marginPagesDisplayed={2}
 								pageRangeDisplayed={ARTICLES_PER_PAGE}
 								onPageChange={handlePageClick}
