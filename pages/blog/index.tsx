@@ -196,8 +196,6 @@ const blog: React.FC = () => {
 							))}
 						</Masonry>
 						<div className="pagination wrapper">
-							{/*<nav aria-label="Page navigation example">*/}
-
 							<ReactPaginate
 								previousLabel={'previous'}
 								previousClassName={'page-link'}
@@ -213,37 +211,8 @@ const blog: React.FC = () => {
 								containerClassName={'pagination'}
 								activeClassName={'active'}
 							/>
-
-							{/*<ul className="pagination">*/}
-							{/*	<li className="page-item">*/}
-							{/*		<a className="page-link" href="#">*/}
-							{/*			Previous*/}
-							{/*		</a>*/}
-							{/*	</li>*/}
-
-							{/*    {currentPages.map((pageNo) => (*/}
-							{/*        <li className="page-item">*/}
-							{/*			<a className="page-link" href="#">*/}
-							{/*				{(pageNo == currentPage) && (*/}
-							{/*					<b>{pageNo}</b>*/}
-							{/*				)}*/}
-							{/*				{(pageNo != currentPage) && (*/}
-							{/*					<>{pageNo}</>*/}
-							{/*				)}*/}
-							{/*			</a>*/}
-							{/*        </li>*/}
-							{/*    ))}*/}
-
-							{/*	<li className="page-item">*/}
-							{/*		<a className="page-link" href="#">*/}
-							{/*			Next*/}
-							{/*		</a>*/}
-							{/*	</li>*/}
-							{/*</ul>*/}
-							{/*</nav>*/}
 						</div>
 					</div>
-					{/* partial */}
 				</>
 			</Page>
 		</>

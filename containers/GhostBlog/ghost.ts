@@ -1,10 +1,10 @@
-import GhostContentAPI from '@tryghost/content-api'
+import GhostContentAPI from '@tryghost/content-api';
 
 const GHOST_HOST = 'https://demo.ghost.io';
 const GHOST_KEY = '22444f78447824223cefc48062';
 
 const api = new GhostContentAPI({
-    host: GHOST_HOST,
+    url: GHOST_HOST,
     key: GHOST_KEY,
     version: "v3"
 });

@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FlexDivRow, Paragraph, ExternalLink } from 'styles/common';
-import {useRouter} from "next/router";
-import {getGhostPost, getGhostPosts} from "../../containers/GhostBlog/ghost";
+import {useRouter} from 'next/router';
+import {getGhostPost} from '../../containers/GhostBlog/ghost';
 import Moment from 'moment';
-import Link from "next/link";
+import Link from 'next/link';
 
 const blog: React.FC = () => {
 
@@ -22,7 +22,7 @@ const blog: React.FC = () => {
 		if (!id) return;
 		if (blog.id) return;
 
-		getGhostPost(id).then(post => {
+		getGhostPost(id).then((post) => {
 			setBlog(post);
 		});
 	});
