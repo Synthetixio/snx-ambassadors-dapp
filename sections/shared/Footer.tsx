@@ -16,6 +16,7 @@ const FooterComponent: React.FC = () => {
 			<FooterInner>
 				<FooterLeft>
 					<Svg src={SNXLogo} />
+					Copyright © 2021 Synthetix Ambassadors. All rights reserved.
 				</FooterLeft>
 				<FooterRight>
 					<StyledLink href={'https://discord.gg/8FPwRwTdd9'}>
