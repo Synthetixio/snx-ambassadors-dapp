@@ -1,14 +1,62 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
-import { FlexDivRow, Paragraph, ExternalLink, FlexDivCol, FlexDivCentered } from 'styles/common';
+import { Trans, useTranslation } from 'react-i18next';
+import {
+	FlexDivRow,
+	Paragraph,
+	FlexDivCol,
+	FlexDivCentered,
+	ExternalLink,
+	StyledLink,
+} from 'styles/common';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 import { Svg } from 'react-optimized-image';
 import HeroGraphic from 'assets/svg/hero.svg';
+import Table from 'components/Table';
+import { members, ambassadorMultisig } from 'constants/ambassadorMultisig';
+import { ethers } from 'ethers';
+import { CellProps } from 'react-table';
+import LinkIcon from 'assets/svg/link-blue.svg';
+import Header from 'components/Header';
 
 const HomePage: React.FC = () => {
 	const { t } = useTranslation();
+
+	const memberColumns = useMemo(() => {
+		const columns = [
+			{
+				Header: <>{t('home.members.table.name')}</>,
+				accessor: 'name',
+				Cell: (cellProps: CellProps<any>) => {
+					return <StyledParagraph>{cellProps.value}</StyledParagraph>;
+				},
+
+				sortable: false,
+				width: 600,
+			},
+			{
+				Header: <>{t('home.members.table.address')}</>,
+				accessor: 'address',
+				Cell: (cellProps: CellProps<any>) => {
+					return (
+						<StyledAddressRow>
+							<StyledParagraph>{ethers.utils.getAddress(cellProps.value)}</StyledParagraph>
+							<StyledExternalIcon
+								href={`https://etherscan.io/address/${ethers.utils.getAddress(cellProps.value)}`}
+							>
+								<Svg src={LinkIcon} />
+							</StyledExternalIcon>
+						</StyledAddressRow>
+					);
+				},
+				sortable: false,
+				width: 600,
+			},
+		];
+
+		return columns;
+	}, [t]);
 
 	return (
 		<>
@@ -25,16 +73,43 @@ const HomePage: React.FC = () => {
 			<Page>
 				<HeroContainer>
 					<Hero>{t('home.hero')}</Hero>
-					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
+					{/* <StyledParagraph>{t('home.sub-hero')}</StyledParagraph> */}
 				</HeroContainer>
-
 				<SvgContainer>
 					<HeroSvg src={HeroGraphic} />
 				</SvgContainer>
-
-				<HeroContainer>
-					<StyledParagraph>{t('ambassadors.description')}</StyledParagraph>
-				</HeroContainer>
+				<Header title={t('home.responsibilities.title')} />
+				<BoxContainer>
+					<StyledParagraph>
+						The Synthetix Ambassadors is a governing body of the Synthetix Protocol, it is the body
+						that is responsible for ecosystem governance, partnerships and ecosystem governance. To
+						learn more about the Synthetix Ambassadors, their mandate is outlined{' '}
+						<a rel="noreferrer" target="_blank" href="https://sips.synthetix.io/sips/sip-157">
+							here.
+						</a>
+					</StyledParagraph>
+				</BoxContainer>
+				<Header title={t('home.members.title')} />
+				<BoxContainer>
+					<StyledParagraph>
+						<Trans
+							i18nKey="home.members.helper"
+							values={{ ambassadorMultisig }}
+							components={[
+								<StyledLink href={`https://etherscan.io/address/${ambassadorMultisig}`} />,
+							]}
+						/>
+					</StyledParagraph>
+				</BoxContainer>
+				<BoxContainer>
+					<StyledTable
+						palette="primary"
+						columns={memberColumns}
+						data={members}
+						isLoading={false}
+						showPagination={false}
+					/>
+				</BoxContainer>
 			</Page>
 		</>
 	);
@@ -81,13 +156,29 @@ const StyledParagraph = styled(Paragraph)`
 	color: ${(props) => props.theme.colors.white};
 	text-transform: none;
 	line-height: 20px;
-	max-width: 800px;
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const BoxContainer = styled(FlexDivRow)<{ first?: boolean }>`
+	max-width: ${MAX_PAGE_WIDTH}px;
+	margin: ${(props) => (props.first ? '120px auto 20px auto' : '40px auto 20px auto')};
+	padding: 0px 16px;
+`;
+
+const StyledTable = styled(Table)`
+	width: 100%;
+
+	.table-body-cell {
+		height: 40px;
+	}
+	.table-body-cell,
+	.table-header-cell {
+		&:last-child {
+		}
+	}
+`;
+
 const StyledExternalIcon = styled(ExternalLink)``;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledAddressRow = styled(FlexDivRow)`
 	justify-content: space-between;
 	width: 100%;

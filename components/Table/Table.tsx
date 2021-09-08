@@ -48,7 +48,6 @@ export const Table: FC<TableProps> = ({
 	isActiveRow,
 	maxRows = MAX_PAGE_ROWS,
 }) => {
-	// TODO: How do I tell Typescript about the usePagination props?
 	const {
 		getTableProps,
 		getTableBodyProps,
