@@ -5,29 +5,28 @@
 	"home": {
 		"page-title": "Home | Synthetix Ambassadors",
 		"hero": "Synthetix ambassadors",
-		"subhero": "The Synthetix Ambassadors programme is for synthetix community members to delegate their third-party voting weights to the ambassadors who aim to vote in the best interest of the synthetix ecosystem."
-	},
-	"ambassadors": {
-		"title": "Mission",
-		"description": "The Synthetix Ambassadors program is for synthetix community members to delegate their third-party voting weights to the ambassadors who aim to vote in the best interest of the synthetix ecosystem."
+		"responsibilities": {
+			"title": "Responsibilities"
+		},
+		"members": {
+			"title": "Members",
+			"helper": "The current ambassadors operate out of a Gnosis Safe Multisig at <0>{{ambassadorMultisig}}</0>",
+			"table": {
+				"name": "name",
+				"address": "address",
+				"votes": "votes"
+			}
+		}
 	},
 	"delegation": {
-		"title": "My Delegation",
+		"title": "Delegation",
 		"box": {
 			"power": "Voting power",
 			"delegated": "Delegated",
 			"view": "View protocol"
 		}
 	},
-	"members": {
-		"title": "Members",
-		"helper": "The following ambassadors operate out of a Gnosis Multisig with address <0>{{ambassadorMultisig}}</0>",
-		"table": {
-			"name": "name",
-			"address": "address",
-			"votes": "votes"
-		}
-	},
+
 	"protocol": {
 		"page-title": "Delegate | Synthetix Ambassadors",
 		"delegate": {

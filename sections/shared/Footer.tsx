@@ -6,7 +6,7 @@ import { FlexDivCentered, ExternalLink } from 'styles/common';
 import { MAX_PAGE_WIDTH } from 'styles/constants';
 
 import SNXLogo from 'assets/svg/snx-logo.svg';
-import Github from 'assets/svg/github.svg';
+// import Github from 'assets/svg/github.svg';
 import Discord from 'assets/svg/discord.svg';
 import Twitter from 'assets/svg/twitter.svg';
 
@@ -24,9 +24,9 @@ const FooterComponent: React.FC = () => {
 					<StyledLink href={'https://twitter.com/snxambassadors'}>
 						<Svg src={Twitter} />
 					</StyledLink>
-					<StyledLink href={'https://github.com/Synthetixio/snx-ambassadors-dapp'}>
+					{/* <StyledLink href={'https://github.com/Synthetixio/snx-ambassadors-dapp'}>
 						<Svg src={Github} />
-					</StyledLink>
+					</StyledLink> */}
 				</FooterRight>
 			</FooterInner>
 		</Footer>

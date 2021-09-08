@@ -88,6 +88,8 @@ const Header: FC = () => {
 						</StatsLogoWrap>
 					</HeaderSectionLeft>
 					<HeaderSectionRight>
+						<HeaderLink href={ROUTES.Delegate}>{t('Delegate')}</HeaderLink>
+						<HeaderLink href={ROUTES.Blog}>{t('Blog')}</HeaderLink>
 						<HeaderLink href={ROUTES.Vote} target="_blank">
 							{t('nav.vote')}
 						</HeaderLink>
@@ -164,9 +166,11 @@ const Header: FC = () => {
 			</HeaderContainer>
 			{menuOpen ? (
 				<MobileMenu>
+					<MobileLink href={ROUTES.Delegate}>{t('Delegate')}</MobileLink>
 					<MobileLink href={ROUTES.Vote} target="_blank">
 						{t('nav.vote')}
 					</MobileLink>
+					<MobileLink href={ROUTES.Blog}>{t('Blog')}</MobileLink>
 				</MobileMenu>
 			) : null}
 		</>

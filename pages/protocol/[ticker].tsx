@@ -133,7 +133,6 @@ const Protocol: React.FC = () => {
 		}
 	}, [copiedAddress, copiedMultisigAddress]);
 
-	// @TODO:
 	const handleDelegateBySig = () => {};
 
 	const handleWithdraw = useCallback(async () => {
