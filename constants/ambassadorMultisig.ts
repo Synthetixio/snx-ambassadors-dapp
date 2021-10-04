@@ -8,8 +8,8 @@ export const members = [
 		address: '0x98Ab20307fdABa1ce8b16d69d22461c6dbe85459',
 	},
 	{
-		name: 'Afif | Synthetix',
-		address: '0xDF09B6BB09FdEe5f8d4c17C6642F0A54D6A7654A',
+		name: 'GUNBOATs',
+		address: '0xbbFf7c2dF218839895695c6D13bbFd4AcdF8191D',
 	},
 	{
 		name: 'andy | synthetix',
