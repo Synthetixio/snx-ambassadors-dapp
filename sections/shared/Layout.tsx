@@ -25,7 +25,7 @@ export default Layout;
 const Page = styled.div``;
 
 const Section = styled.section`
-	min-height: 90vh;
+	min-height: 100vh;
 	padding-top: 20px;
 	padding-bottom: 80px;
 

@@ -119,6 +119,7 @@ export default HomePage;
 
 const Page = styled.div`
 	padding-bottom: 24px;
+	min-height: 100vh;
 `;
 
 const HeroContainer = styled(FlexDivCol)`

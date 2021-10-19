@@ -73,6 +73,15 @@
 			}
 		}
 	},
+	"gpp": {
+		"title": "Governance Participation Program",
+		"action": {
+			"title": "Claim"
+		},
+		"info": {
+			"title": "Statistics"
+		}
+	},
 	"common": {
 		"wallet": {
 			"not-connected": "Connect wallet",
