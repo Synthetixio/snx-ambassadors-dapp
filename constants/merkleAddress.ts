@@ -1,1 +1,1 @@
-export const merkleTreeAddress = '0xF9E9BdbE39F53d0Fb40E906fc0bC709875B4412D';
+export const merkleTreeAddress = '0x2CA8723B766fFEd1FDA5eC9Ff925f564CE5AB28e';
