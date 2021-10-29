@@ -23,6 +23,7 @@ import Notify from 'containers/Notify';
 import useUserClaimData from 'hooks/useUserClaimData';
 import useHasClaimed from 'hooks/useHasClaimed';
 import useTotalRewardsLeft from 'hooks/useTotalRewardsLeft';
+import { format } from 'date-fns';
 
 const GPP: React.FC = () => {
 	const { t } = useTranslation();
@@ -41,7 +42,10 @@ const GPP: React.FC = () => {
 	const hasClaimed = useHasClaimed(index);
 	const totalSupply = useTotalRewardsLeft();
 
-	const deadlineForClaiming = new Date().getUTCDate();
+	const deadlineForClaiming = format(
+		new Date('Thu Nov 18 2021 13:00:00 GMT+0000'),
+		'dd.MM.yyyy - hh:mm:ss'
+	);
 
 	useEffect(() => {
 		if (address && claimData && claimData.hasClaim) {
